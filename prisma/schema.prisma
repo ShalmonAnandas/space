@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username        String   @unique
+  passwordHash    String
+  createdAt       DateTime @default(now()) @db.Timestamptz
+  
+  spacesAsUser1   Space[]  @relation("SpaceUser1")
+  spacesAsUser2   Space[]  @relation("SpaceUser2")
+  invitesCreated  Invite[]
+  pushSubscriptions PushSubscription[]
+  notices         Notice[]
+  gossips         Gossip[]
+  moods           Mood[]
+  dailyClicks     DailyClick[]
+  notifications   NotificationQueue[]
+}
+
+model Space {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  userId1   String   @db.Uuid
+  userId2   String?  @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz
+  
+  user1     User     @relation("SpaceUser1", fields: [userId1], references: [id], onDelete: Cascade)
+  user2     User?    @relation("SpaceUser2", fields: [userId2], references: [id], onDelete: SetNull)
+  
+  invite    Invite?
+  notices   Notice[]
+  gossips   Gossip[]
+  moods     Mood[]
+  dailyClicks DailyClick[]
+  notifications NotificationQueue[]
+  
+  @@index([userId1, userId2])
+}
+
+model Invite {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  spaceId   String   @unique @db.Uuid
+  creatorId String   @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz
+  
+  space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  creator   User     @relation(fields: [creatorId], references: [id])
+}
+
+model PushSubscription {
+  id           Int      @id @default(autoincrement())
+  userId       String   @db.Uuid
+  subscription Json
+  
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, subscription])
+}
+
+model Notice {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  spaceId   String   @db.Uuid
+  authorId  String   @db.Uuid
+  content   String
+  seen      Boolean  @default(false)
+  isEdited  Boolean  @default(false)
+  createdAt DateTime @default(now()) @db.Timestamptz
+  
+  space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  author    User     @relation(fields: [authorId], references: [id])
+  
+  @@index([spaceId])
+}
+
+model Gossip {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  spaceId   String   @db.Uuid
+  authorId  String   @db.Uuid
+  content   String
+  seen      Boolean  @default(false)
+  canReRead Boolean  @default(true)
+  createdAt DateTime @default(now()) @db.Timestamptz
+  
+  space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  author    User     @relation(fields: [authorId], references: [id])
+  
+  @@index([spaceId])
+}
+
+model Mood {
+  id        Int      @id @default(autoincrement())
+  spaceId   String   @db.Uuid
+  userId    String   @db.Uuid
+  mood      String
+  createdAt DateTime @default(now()) @db.Timestamptz
+  
+  space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model DailyClick {
+  id        Int      @id @default(autoincrement())
+  spaceId   String   @db.Uuid
+  userId    String   @db.Uuid
+  type      String
+  createdAt DateTime @default(now()) @db.Timestamptz
+  
+  space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+  
+  @@index([userId, type, createdAt])
+}
+
+model NotificationQueue {
+  id        Int      @id @default(autoincrement())
+  userId    String   @db.Uuid
+  spaceId   String   @db.Uuid
+  type      String
+  content   Json
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now()) @db.Timestamptz
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, read])
+}

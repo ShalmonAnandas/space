@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gradient-to-br from-pastel-pink via-pastel-purple to-pastel-blue min-h-screen;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+  }
+}
+
+@layer components {
+  .btn-retro {
+    @apply px-6 py-3 rounded-retro shadow-retro font-bold transition-all duration-200;
+    @apply hover:translate-x-1 hover:translate-y-1 hover:shadow-none;
+  }
+  
+  .btn-primary {
+    @apply btn-retro bg-pastel-purple text-retro-dark;
+  }
+  
+  .btn-secondary {
+    @apply btn-retro bg-pastel-peach text-retro-dark;
+  }
+  
+  .btn-success {
+    @apply btn-retro bg-pastel-green text-retro-dark;
+  }
+  
+  .btn-danger {
+    @apply btn-retro bg-pastel-rose text-retro-dark;
+  }
+  
+  .card-retro {
+    @apply bg-white/90 backdrop-blur-sm rounded-retro shadow-retro-lg p-6;
+    @apply border-4 border-pastel-purple/30;
+  }
+  
+  .input-retro {
+    @apply w-full px-4 py-3 rounded-retro border-4 border-pastel-purple/30;
+    @apply focus:outline-none focus:border-pastel-purple focus:ring-4 focus:ring-pastel-purple/20;
+    @apply bg-white/90 text-retro-dark placeholder-retro-medium/50;
+  }
+  
+  .badge-retro {
+    @apply inline-flex items-center justify-center px-3 py-1 rounded-full;
+    @apply text-xs font-bold shadow-retro;
+  }
+}

@@ -1,0 +1,128 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { use } from 'react';
+
+export default function InvitePage({ params }: { params: Promise<{ inviteId: string }> }) {
+  const resolvedParams = use(params);
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [spaceInfo, setSpaceInfo] = useState<any>(null);
+  const [error, setError] = useState('');
+  const [joining, setJoining] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    checkAuthAndInvite();
+  }, []);
+
+  const checkAuthAndInvite = async () => {
+    try {
+      // Check auth
+      const authResponse = await fetch('/api/auth/me');
+      const authData = await authResponse.json();
+      setIsLoggedIn(authData.isLoggedIn);
+
+      // Check invite validity
+      const inviteResponse = await fetch(`/api/invites/${resolvedParams.inviteId}`);
+      const inviteData = await inviteResponse.json();
+
+      if (inviteResponse.ok) {
+        setSpaceInfo(inviteData.space);
+      } else {
+        setError(inviteData.error || 'Invalid invite link');
+      }
+    } catch (err) {
+      setError('Failed to load invite');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleJoin = async () => {
+    if (!isLoggedIn) {
+      // Redirect to login with return URL
+      router.push(`/login?redirect=/invite/${resolvedParams.inviteId}`);
+      return;
+    }
+
+    setJoining(true);
+    try {
+      const response = await fetch(`/api/invites/${resolvedParams.inviteId}/join`, {
+        method: 'POST',
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        router.push(`/space/${data.space.id}`);
+      } else {
+        setError(data.error || 'Failed to join space');
+      }
+    } catch (err) {
+      setError('Something went wrong');
+    } finally {
+      setJoining(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="card-retro">
+          <p className="text-retro-dark">Loading invite...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="card-retro max-w-md w-full text-center">
+          <h1 className="text-3xl font-bold text-retro-dark mb-4">❌ Oops!</h1>
+          <p className="text-retro-medium mb-6">{error}</p>
+          <button onClick={() => router.push('/dashboard')} className="btn-primary">
+            Go to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="card-retro max-w-md w-full text-center space-y-6">
+        <div>
+          <h1 className="text-4xl font-bold text-retro-dark mb-2">🎉 You're Invited!</h1>
+          <p className="text-retro-medium">
+            Join <span className="font-bold">{spaceInfo?.name}</span>
+          </p>
+        </div>
+
+        <div className="bg-pastel-purple-light p-4 rounded-retro">
+          <p className="text-retro-dark">
+            <span className="font-bold">{spaceInfo?.creatorUsername}</span> wants to share a space with you!
+          </p>
+        </div>
+
+        {!isLoggedIn && (
+          <div className="bg-pastel-yellow p-4 rounded-retro">
+            <p className="text-retro-dark text-sm">
+              You'll need to login or create an account first
+            </p>
+          </div>
+        )}
+
+        <button
+          onClick={handleJoin}
+          disabled={joining}
+          className="btn-primary w-full disabled:opacity-50"
+        >
+          {joining ? 'Joining...' : isLoggedIn ? 'Join Space' : 'Login to Join'}
+        </button>
+      </div>
+    </div>
+  );
+}
