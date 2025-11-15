@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface SuttaButtonProps {
   spaceId: string;
@@ -13,11 +13,7 @@ export function SuttaButton({ spaceId }: SuttaButtonProps) {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    loadClickData();
-  }, [spaceId]);
-
-  const loadClickData = async () => {
+  const loadClickData = useCallback(async () => {
     try {
       const response = await fetch(`/api/spaces/${spaceId}/daily-click?buttonType=sutta`);
       const data = await response.json();
@@ -31,7 +27,11 @@ export function SuttaButton({ spaceId }: SuttaButtonProps) {
     } catch (err) {
       console.error('Failed to load click data:', err);
     }
-  };
+  }, [spaceId]);
+
+  useEffect(() => {
+    loadClickData();
+  }, [loadClickData]);
 
   const isNewDay = (date: Date) => {
     const now = new Date();
@@ -92,7 +92,7 @@ export function SuttaButton({ spaceId }: SuttaButtonProps) {
     <div className="card-retro">
       <h3 className="text-xl font-bold text-retro-dark mb-3">🤍 Sutta Button</h3>
       <p className="text-sm text-retro-medium mb-4">
-        Click once daily to let your partner know you're thinking of them. Click multiple times to
+        Click once daily to let your partner know you are thinking of them. Click multiple times to
         send an SOS!
       </p>
 
@@ -111,7 +111,7 @@ export function SuttaButton({ spaceId }: SuttaButtonProps) {
       {clickCount > 0 && (
         <div className="bg-white/50 p-3 rounded-retro border-2 border-pastel-pink/30 mb-3">
           <p className="text-sm text-retro-dark">
-            Today's clicks: <span className="font-bold">{clickCount}</span>
+            Clicks today: <span className="font-bold">{clickCount}</span>
             {clickCount > 1 && ' 🚨 (SOS mode!)'}
           </p>
         </div>

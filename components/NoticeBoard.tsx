@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface Notice {
   id: string;
@@ -26,13 +26,7 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
   const [error, setError] = useState('');
   const [cooldownEnds, setCooldownEnds] = useState<Date | null>(null);
 
-  useEffect(() => {
-    loadNotice();
-    const interval = setInterval(loadNotice, 10000); // Poll every 10 seconds
-    return () => clearInterval(interval);
-  }, [spaceId]);
-
-  const loadNotice = async () => {
+  const loadNotice = useCallback(async () => {
     try {
       const response = await fetch(`/api/spaces/${spaceId}/notice`);
       const data = await response.json();
@@ -53,7 +47,13 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [spaceId]);
+
+  useEffect(() => {
+    loadNotice();
+    const interval = setInterval(loadNotice, 10000); // Poll every 10 seconds
+    return () => clearInterval(interval);
+  }, [loadNotice]);
 
   const handlePost = async (e: React.FormEvent) => {
     e.preventDefault();

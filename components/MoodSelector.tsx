@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface MoodSelectorProps {
   spaceId: string;
@@ -24,13 +24,7 @@ export function MoodSelector({ spaceId }: MoodSelectorProps) {
   const [error, setError] = useState('');
   const [partnerMood, setPartnerMood] = useState<any>(null);
 
-  useEffect(() => {
-    loadPartnerMood();
-    const interval = setInterval(loadPartnerMood, 30000); // Poll every 30 seconds
-    return () => clearInterval(interval);
-  }, [spaceId]);
-
-  const loadPartnerMood = async () => {
+  const loadPartnerMood = useCallback(async () => {
     try {
       const response = await fetch(`/api/spaces/${spaceId}/mood`);
       const data = await response.json();
@@ -43,7 +37,13 @@ export function MoodSelector({ spaceId }: MoodSelectorProps) {
     } catch (err) {
       console.error('Failed to load partner mood:', err);
     }
-  };
+  }, [spaceId]);
+
+  useEffect(() => {
+    loadPartnerMood();
+    const interval = setInterval(loadPartnerMood, 30000); // Poll every 30 seconds
+    return () => clearInterval(interval);
+  }, [loadPartnerMood]);
 
   const handleMoodSelect = async (mood: string) => {
     setLoading(true);
@@ -84,7 +84,7 @@ export function MoodSelector({ spaceId }: MoodSelectorProps) {
     <div className="card-retro">
       <h3 className="text-xl font-bold text-retro-dark mb-3">💭 Mood Share</h3>
       <p className="text-sm text-retro-medium mb-4">
-        Share how you're feeling right now. Your partner will be notified!
+        Share how you are feeling right now. Your partner will be notified!
       </p>
 
       {/* Partner's Mood */}
