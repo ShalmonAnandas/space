@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/mood-prompt",
-      "schedule": "0 9,14,20 * * *"
+      "schedule": "0 14 * * *"
     }
   ]
 }
