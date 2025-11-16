@@ -2,62 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Dark Theme Tokens — Brick Ember / Teal / Forest */
+/* Dark Retro Pastel Theme — Teal / Pink / Lavender */
 :root {
   /* Core palette */
-  --md-sys-color-primary: rgba(115, 186, 155, 1);            /* muted-teal */
-  --md-sys-color-surface-tint: rgba(115, 186, 155, 1);
-  --md-sys-color-on-primary: rgba(213, 242, 227, 1);          /* honeydew */
-  --md-sys-color-primary-container: rgba(0, 62, 31, 1);       /* deep-forest */
-  --md-sys-color-on-primary-container: rgba(213, 242, 227, 1);
+  --md-sys-color-primary: #7CD7C7;            /* pastel teal */
+  --md-sys-color-surface-tint: #7CD7C7;
+  --md-sys-color-on-primary: #0B0F14;         /* deep ink */
+  --md-sys-color-primary-container: #15313A;  /* teal slate */
+  --md-sys-color-on-primary-container: #B4FFF1;
 
-  --md-sys-color-secondary: rgba(186, 45, 11, 1);             /* brick-ember */
-  --md-sys-color-on-secondary: rgba(213, 242, 227, 1);
-  --md-sys-color-secondary-container: rgba(0, 62, 31, 1);
-  --md-sys-color-on-secondary-container: rgba(213, 242, 227, 1);
+  --md-sys-color-secondary: #FFB3C7;          /* pastel pink */
+  --md-sys-color-on-secondary: #0B0F14;
+  --md-sys-color-secondary-container: #3A2437;/* deep mauve */
+  --md-sys-color-on-secondary-container: #FFD8E8;
 
-  --md-sys-color-tertiary: rgba(115, 186, 155, 1);            /* reuse teal for success */
-  --md-sys-color-on-tertiary: rgba(213, 242, 227, 1);
-  --md-sys-color-tertiary-container: rgba(0, 62, 31, 1);
-  --md-sys-color-on-tertiary-container: rgba(213, 242, 227, 1);
+  --md-sys-color-tertiary: #C5B5FF;           /* lavender */
+  --md-sys-color-on-tertiary: #0B0F14;
+  --md-sys-color-tertiary-container: #2D2745; /* dusk purple */
+  --md-sys-color-on-tertiary-container: #E9E3FF;
 
-  --md-sys-color-error: rgba(186, 45, 11, 1);                 /* map error to ember */
-  --md-sys-color-on-error: rgba(213, 242, 227, 1);
-  --md-sys-color-error-container: rgba(186, 45, 11, 0.18);
-  --md-sys-color-on-error-container: rgba(213, 242, 227, 1);
+  --md-sys-color-error: #FF7777;              /* soft coral */
+  --md-sys-color-on-error: #0B0F14;
+  --md-sys-color-error-container: rgba(255, 119, 119, 0.18);
+  --md-sys-color-on-error-container: #FFDADA;
 
-  --md-sys-color-background: rgba(1, 17, 10, 1);              /* onyx */
-  --md-sys-color-on-background: rgba(213, 242, 227, 1);
-  --md-sys-color-surface: rgba(1, 17, 10, 1);
-  --md-sys-color-on-surface: rgba(213, 242, 227, 1);
-  --md-sys-color-surface-variant: rgba(0, 62, 31, 1);
-  --md-sys-color-on-surface-variant: rgba(213, 242, 227, 0.9);
-  --md-sys-color-outline: rgba(115, 186, 155, 0.45);
-  --md-sys-color-outline-variant: rgba(0, 62, 31, 1);
+  --md-sys-color-background: #0B0F14;         /* midnight */
+  --md-sys-color-on-background: #E8EEF4;      /* soft mist */
+  --md-sys-color-surface: #121825;            /* deep slate */
+  --md-sys-color-on-surface: #E8EEF4;
+  --md-sys-color-surface-variant: #1B2334;    /* blue slate */
+  --md-sys-color-on-surface-variant: rgba(232, 238, 244, 0.85);
+  --md-sys-color-outline: rgba(93, 107, 138, 0.5);
+  --md-sys-color-outline-variant: #1B2334;
   --md-sys-color-shadow: rgb(0 0 0);
   --md-sys-color-scrim: rgb(0 0 0);
-  --md-sys-color-inverse-surface: rgba(213, 242, 227, 1);
-  --md-sys-color-inverse-on-surface: rgba(1, 17, 10, 1);
-  --md-sys-color-inverse-primary: rgba(186, 45, 11, 1);
-  --md-sys-color-primary-fixed: rgba(115, 186, 155, 1);
-  --md-sys-color-on-primary-fixed: rgba(213, 242, 227, 1);
-  --md-sys-color-primary-fixed-dim: rgba(115, 186, 155, 1);
-  --md-sys-color-on-primary-fixed-variant: rgba(0, 62, 31, 1);
-  --md-sys-color-secondary-fixed: rgba(186, 45, 11, 1);
-  --md-sys-color-on-secondary-fixed: rgba(213, 242, 227, 1);
-  --md-sys-color-secondary-fixed-dim: rgba(186, 45, 11, 1);
-  --md-sys-color-on-secondary-fixed-variant: rgba(0, 62, 31, 1);
-  --md-sys-color-tertiary-fixed: rgba(115, 186, 155, 1);
-  --md-sys-color-on-tertiary-fixed: rgba(213, 242, 227, 1);
-  --md-sys-color-tertiary-fixed-dim: rgba(115, 186, 155, 1);
-  --md-sys-color-on-tertiary-fixed-variant: rgba(0, 62, 31, 1);
-  --md-sys-color-surface-dim: rgba(1, 17, 10, 1);
-  --md-sys-color-surface-bright: rgba(0, 62, 31, 1);
-  --md-sys-color-surface-container-lowest: rgba(1, 17, 10, 1);
-  --md-sys-color-surface-container-low: rgba(0, 62, 31, 1);
-  --md-sys-color-surface-container: rgba(0, 62, 31, 1);
-  --md-sys-color-surface-container-high: rgba(0, 62, 31, 1);
-  --md-sys-color-surface-container-highest: rgba(0, 62, 31, 1);
+  --md-sys-color-inverse-surface: #E8EEF4;
+  --md-sys-color-inverse-on-surface: #0B0F14;
+  --md-sys-color-inverse-primary: #FFB3C7;
+  --md-sys-color-primary-fixed: #7CD7C7;
+  --md-sys-color-on-primary-fixed: #0B0F14;
+  --md-sys-color-primary-fixed-dim: #6CC9B9;
+  --md-sys-color-on-primary-fixed-variant: #15313A;
+  --md-sys-color-secondary-fixed: #FFB3C7;
+  --md-sys-color-on-secondary-fixed: #0B0F14;
+  --md-sys-color-secondary-fixed-dim: #E7A3B7;
+  --md-sys-color-on-secondary-fixed-variant: #3A2437;
+  --md-sys-color-tertiary-fixed: #C5B5FF;
+  --md-sys-color-on-tertiary-fixed: #0B0F14;
+  --md-sys-color-tertiary-fixed-dim: #B7A7F1;
+  --md-sys-color-on-tertiary-fixed-variant: #2D2745;
+  --md-sys-color-surface-dim: #0B0F14;
+  --md-sys-color-surface-bright: #1B2334;
+  --md-sys-color-surface-container-lowest: #0B0F14;
+  --md-sys-color-surface-container-low: #151B2A;
+  --md-sys-color-surface-container: #1B2334;
+  --md-sys-color-surface-container-high: #212A3D;
+  --md-sys-color-surface-container-highest: #27324A;
 }
 
 @layer base {

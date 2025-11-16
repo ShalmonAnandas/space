@@ -33,44 +33,45 @@ const config: Config = {
       colors: {
         // Dark palette mapped to MD tokens
         md: {
-          // Primary uses muted-teal, readable on honeydew
-          primary: 'rgba(115, 186, 155, 1)',
-          'on-primary': 'rgba(213, 242, 227, 1)',
-          'primary-container': 'rgba(0, 62, 31, 1)',
-          'on-primary-container': 'rgba(213, 242, 227, 1)',
+          // Retro pastel on dark
+          // Primary: pastel teal
+          primary: '#7CD7C7',
+          'on-primary': '#0B0F14',
+          'primary-container': '#15313A',
+          'on-primary-container': '#B4FFF1',
 
-          // Secondary uses brick-ember accent
-          secondary: 'rgba(186, 45, 11, 1)',
-          'on-secondary': 'rgba(213, 242, 227, 1)',
-          'secondary-container': 'rgba(0, 62, 31, 1)',
-          'on-secondary-container': 'rgba(213, 242, 227, 1)',
+          // Secondary: pastel pink
+          secondary: '#FFB3C7',
+          'on-secondary': '#0B0F14',
+          'secondary-container': '#3A2437',
+          'on-secondary-container': '#FFD8E8',
 
-          // Tertiary reuses teal for success
-          tertiary: 'rgba(115, 186, 155, 1)',
-          'on-tertiary': 'rgba(213, 242, 227, 1)',
-          'tertiary-container': 'rgba(0, 62, 31, 1)',
-          'on-tertiary-container': 'rgba(213, 242, 227, 1)',
+          // Tertiary: lavender
+          tertiary: '#C5B5FF',
+          'on-tertiary': '#0B0F14',
+          'tertiary-container': '#2D2745',
+          'on-tertiary-container': '#E9E3FF',
 
-          // Error mapped to ember shades
-          error: 'rgba(186, 45, 11, 1)',
-          'on-error': 'rgba(213, 242, 227, 1)',
-          'error-container': 'rgba(186, 45, 11, 0.18)',
-          'on-error-container': 'rgba(213, 242, 227, 1)',
+          // Error: soft coral
+          error: '#FF7777',
+          'on-error': '#0B0F14',
+          'error-container': 'rgba(255, 119, 119, 0.18)',
+          'on-error-container': '#FFDADA',
 
           // Surfaces and background
-          background: 'rgba(1, 17, 10, 1)',
-          'on-background': 'rgba(213, 242, 227, 1)',
-          surface: 'rgba(1, 17, 10, 1)',
-          'on-surface': 'rgba(213, 242, 227, 1)',
-          'surface-variant': 'rgba(0, 62, 31, 1)',
-          'on-surface-variant': 'rgba(213, 242, 227, 0.9)',
-          outline: 'rgba(115, 186, 155, 0.45)',
-          'outline-variant': 'rgba(0, 62, 31, 1)',
-          'surface-container-lowest': 'rgba(1, 17, 10, 1)',
-          'surface-container-low': 'rgba(0, 62, 31, 1)',
-          'surface-container': 'rgba(0, 62, 31, 1)',
-          'surface-container-high': 'rgba(0, 62, 31, 1)',
-          'surface-container-highest': 'rgba(0, 62, 31, 1)',
+          background: '#0B0F14',
+          'on-background': '#E8EEF4',
+          surface: '#121825',
+          'on-surface': '#E8EEF4',
+          'surface-variant': '#1B2334',
+          'on-surface-variant': 'rgba(232, 238, 244, 0.85)',
+          outline: 'rgba(93, 107, 138, 0.5)',
+          'outline-variant': '#1B2334',
+          'surface-container-lowest': '#0B0F14',
+          'surface-container-low': '#151B2A',
+          'surface-container': '#1B2334',
+          'surface-container-high': '#212A3D',
+          'surface-container-highest': '#27324A',
         },
       },
       borderRadius: {

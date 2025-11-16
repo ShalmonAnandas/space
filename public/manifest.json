@@ -4,8 +4,8 @@
   "description": "A private shared space for two partners",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#01110A",
-  "theme_color": "#01110A",
+  "background_color": "#0B0F14",
+  "theme_color": "#0B0F14",
   "orientation": "portrait-primary",
   "icons": [
     {
