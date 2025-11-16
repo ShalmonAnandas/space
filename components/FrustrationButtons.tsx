@@ -19,9 +19,9 @@ export function FrustrationButtons({ spaceId }: FrustrationButtonsProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const buttons = [
-    { type: 'project', label: 'Project Frustration', emoji: '💼', color: 'bg-pastel-pink' },
-    { type: 'junior', label: 'Junior Frustration', emoji: '🎓', color: 'bg-pastel-purple' },
-    { type: 'resign', label: 'Resign Frustration', emoji: '📝', color: 'bg-pastel-peach' },
+    { type: 'project', label: 'Project Frustration', emoji: '', color: 'bg-pastel-pink' },
+    { type: 'junior', label: 'Junior Frustration', emoji: '', color: 'bg-pastel-purple' },
+    { type: 'resign', label: 'Resign Frustration', emoji: '', color: 'bg-pastel-peach' },
   ];
 
   useEffect(() => {
@@ -105,9 +105,9 @@ export function FrustrationButtons({ spaceId }: FrustrationButtonsProps) {
 
   return (
     <div className="card-retro">
-      <h3 className="text-xl font-bold text-retro-dark mb-3">😤 Frustration Buttons</h3>
+      <h3 className="text-xl font-bold text-retro-dark mb-3">Frustration Buttons</h3>
       <p className="text-sm text-retro-medium mb-4">
-        Vent your frustrations! Click once per day to notify your partner. They will understand. 💙
+        Vent your frustrations! Click anytime to notify your partner. They will understand.
       </p>
 
       <div className="space-y-4">
@@ -121,38 +121,28 @@ export function FrustrationButtons({ spaceId }: FrustrationButtonsProps) {
           return (
             <div key={button.type} className="border-2 border-retro-medium/20 rounded-retro p-4">
               <div className="flex items-center gap-3 mb-3">
-                <span className="text-3xl">{button.emoji}</span>
                 <div className="flex-1">
                   <h4 className="font-bold text-retro-dark">{button.label}</h4>
-                  {buttonStatus?.lastClickAt && !canClick && (
-                    <p className="text-xs text-retro-medium">
-                      ⏳ Resets in: {getTimeUntilReset(buttonStatus.lastClickAt)}
-                    </p>
-                  )}
                 </div>
               </div>
 
               <button
                 onClick={() => handleClick(button.type)}
-                disabled={isLoading || !canClick}
+                disabled={isLoading}
                 className={`btn-retro w-full ${button.color} disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                {isLoading
-                  ? '...'
-                  : canClick
-                  ? `${button.emoji} Click to Vent`
-                  : '✅ Already Clicked Today'}
+                {isLoading ? '...' : 'Click to Vent'}
               </button>
 
               {message && (
                 <div className="bg-green-100 border-2 border-green-300 rounded-retro p-2 mt-2">
-                  <p className="text-green-700 text-xs">✅ {message}</p>
+                  <p className="text-green-700 text-xs">{message}</p>
                 </div>
               )}
 
               {error && (
                 <div className="bg-red-100 border-2 border-red-300 rounded-retro p-2 mt-2">
-                  <p className="text-red-700 text-xs">❌ {error}</p>
+                  <p className="text-red-700 text-xs">{error}</p>
                 </div>
               )}
             </div>
@@ -162,7 +152,7 @@ export function FrustrationButtons({ spaceId }: FrustrationButtonsProps) {
 
       <div className="bg-pastel-blue/20 rounded-retro p-3 mt-4">
         <p className="text-xs text-retro-medium">
-          💡 Each button can be clicked once per day. Your partner will receive a notification with
+          Each button can be clicked anytime. Your partner will receive a notification with
           the specific frustration type!
         </p>
       </div>

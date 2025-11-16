@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { InstallPrompt } from '@/components/InstallPrompt';
-import { NotificationBadge } from '@/components/NotificationBadge';
 import { NotificationPrompt } from '@/components/NotificationPrompt';
 
 interface Space {
@@ -121,7 +120,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen p-4 md:p-8">
-      <NotificationBadge />
       <InstallPrompt />
       <NotificationPrompt />
       
@@ -130,7 +128,7 @@ export default function DashboardPage() {
         <div className="card-retro flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-retro-dark">
-              👋 Hey, {user?.username}!
+              Hey, {user?.username}!
             </h1>
             <p className="text-retro-medium">Your shared spaces</p>
           </div>
@@ -145,7 +143,7 @@ export default function DashboardPage() {
           disabled={creating}
           className="btn-primary w-full"
         >
-          {creating ? 'Creating...' : '✨ Create New Space'}
+          {creating ? 'Creating...' : 'Create New Space'}
         </button>
 
         {/* Spaces List */}
@@ -194,7 +192,7 @@ export default function DashboardPage() {
                       onClick={() => handleGenerateInvite(space.id)}
                       className="btn-secondary flex-1"
                     >
-                      📨 Generate Invite Link
+                      Generate Invite Link
                     </button>
                   ) : null}
                 </div>
@@ -209,7 +207,7 @@ export default function DashboardPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="card-retro max-w-lg w-full">
             <h2 className="text-2xl font-bold text-retro-dark mb-4">
-              🎉 Invite Link Generated!
+              Invite Link Generated!
             </h2>
             <p className="text-retro-medium mb-4">
               Share this link with your partner to join this space:
@@ -219,7 +217,7 @@ export default function DashboardPage() {
             </div>
             <div className="flex gap-2">
               <button onClick={copyInviteLink} className="btn-primary flex-1">
-                📋 Copy Link
+                Copy Link
               </button>
               <button
                 onClick={() => setShowInviteModal(false)}

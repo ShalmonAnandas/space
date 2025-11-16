@@ -12,7 +12,7 @@ export function InstallPrompt() {
       <div id="install-prompt" className="fixed bottom-4 left-4 right-4 bg-pastel-purple p-4 rounded-lg shadow-lg z-50">
         <h3 className="font-bold text-gray-800 mb-2">Install Partner App</h3>
         <p className="text-sm text-gray-700 mb-3">
-          Tap the Share button <span className="inline-block">📤</span> and select &quot;Add to Home Screen&quot;
+          Tap the Share button and select &quot;Add to Home Screen&quot;
         </p>
         <button
           onClick={() => {

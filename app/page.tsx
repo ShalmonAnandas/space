@@ -23,7 +23,7 @@ export default function Home() {
       <div className="card-retro max-w-2xl w-full text-center space-y-8">
         <div>
           <h1 className="text-6xl font-bold text-retro-dark mb-4">
-            💕 Partner App
+            Partner App
           </h1>
           <p className="text-xl text-retro-medium mb-8">
             Your private shared space for two
@@ -47,7 +47,7 @@ export default function Home() {
 
         <div className="pt-8 border-t-4 border-pastel-purple/30">
           <p className="text-sm text-retro-medium">
-            ✨ Notice Board • 🚬 Sutta Button • 😊 Mood Sharing • 🤫 Gossip • 😤 Frustration Vents
+            Notice Board • Sutta Button • Mood Sharing • Gossip • Frustration Vents
           </p>
         </div>
       </div>

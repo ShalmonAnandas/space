@@ -172,7 +172,7 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
     <div className="space-y-4">
       {/* Current Notice */}
       <div className="card-retro">
-        <h2 className="text-2xl font-bold text-retro-dark mb-4">📋 Notice Board</h2>
+        <h2 className="text-2xl font-bold text-retro-dark mb-4">Notice Board</h2>
 
         {notice ? (
           <div className="space-y-4">
@@ -181,24 +181,24 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
               <div className="flex justify-between items-center text-sm text-retro-medium">
                 <span>Posted by: {notice.postedBy === userId ? 'You' : 'Partner'}</span>
                 {notice.editedAt && (
-                  <span className="badge-retro bg-pastel-yellow">✏️ Edited</span>
+                  <span className="badge-retro bg-pastel-yellow">Edited</span>
                 )}
               </div>
             </div>
 
             {notice.postedBy !== userId && !notice.seenAt && (
               <button onClick={markAsSeen} className="btn-retro bg-pastel-green">
-                👀 Mark as Seen
+                Mark as Seen
               </button>
             )}
 
             {notice.postedBy !== userId && notice.seenAt && (
-              <p className="text-sm text-retro-medium">✅ Seen</p>
+              <p className="text-sm text-retro-medium">Seen</p>
             )}
 
             {canEdit && !editing && (
               <button onClick={startEditing} className="btn-retro bg-pastel-yellow">
-                ✏️ Edit (one-time only)
+                Edit (one-time only)
               </button>
             )}
 
@@ -217,7 +217,7 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
       {(canPost || editing) && (
         <div className="card-retro">
           <h3 className="text-xl font-bold text-retro-dark mb-3">
-            {editing ? '✏️ Edit Notice' : '📝 Post New Notice'}
+            {editing ? 'Edit Notice' : 'Post New Notice'}
           </h3>
 
           <form onSubmit={editing ? handleEdit : handlePost} className="space-y-3">
@@ -236,7 +236,7 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
 
             {error && (
               <div className="bg-red-100 border-2 border-red-300 rounded-retro p-3">
-                <p className="text-red-700 text-sm">❌ {error}</p>
+                <p className="text-red-700 text-sm">{error}</p>
               </div>
             )}
 
@@ -273,7 +273,7 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
       {!canPost && !editing && notice && (
         <div className="card-retro bg-pastel-pink/20">
           <p className="text-retro-dark">
-            ℹ️ You can post a new notice once your partner has seen your current message.
+            You can post a new notice once your partner has seen your current message.
           </p>
         </div>
       )}

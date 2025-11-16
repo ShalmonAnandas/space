@@ -7,14 +7,14 @@ interface MoodSelectorProps {
 }
 
 const MOODS = [
-  { value: 'Happy', emoji: '😊', color: 'bg-pastel-yellow' },
-  { value: 'Frustrated', emoji: '😤', color: 'bg-pastel-pink' },
-  { value: 'Lost', emoji: '😕', color: 'bg-pastel-purple' },
-  { value: 'Okay', emoji: '😐', color: 'bg-pastel-blue' },
-  { value: 'Tired', emoji: '😴', color: 'bg-pastel-peach' },
-  { value: 'Excited', emoji: '🤩', color: 'bg-pastel-green' },
-  { value: 'Anxious', emoji: '😰', color: 'bg-pastel-pink-light' },
-  { value: 'Calm', emoji: '😌', color: 'bg-pastel-blue-light' },
+  { value: 'Happy', emoji: '', color: 'bg-pastel-yellow' },
+  { value: 'Frustrated', emoji: '', color: 'bg-pastel-pink' },
+  { value: 'Lost', emoji: '', color: 'bg-pastel-purple' },
+  { value: 'Okay', emoji: '', color: 'bg-pastel-blue' },
+  { value: 'Tired', emoji: '', color: 'bg-pastel-peach' },
+  { value: 'Excited', emoji: '', color: 'bg-pastel-green' },
+  { value: 'Anxious', emoji: '', color: 'bg-pastel-pink-light' },
+  { value: 'Calm', emoji: '', color: 'bg-pastel-blue-light' },
 ];
 
 export function MoodSelector({ spaceId }: MoodSelectorProps) {
@@ -64,7 +64,7 @@ export function MoodSelector({ spaceId }: MoodSelectorProps) {
       }
 
       setSelectedMood(mood);
-      setMessage('Mood shared with your partner! 💫');
+      setMessage('Mood shared with your partner!');
       await loadPartnerMood();
 
       // Clear success message after 3 seconds
@@ -82,7 +82,7 @@ export function MoodSelector({ spaceId }: MoodSelectorProps) {
 
   return (
     <div className="card-retro">
-      <h3 className="text-xl font-bold text-retro-dark mb-3">💭 Mood Share</h3>
+      <h3 className="text-xl font-bold text-retro-dark mb-3">Mood Share</h3>
       <p className="text-sm text-retro-medium mb-4">
         Share how you are feeling right now. Your partner will be notified!
       </p>
@@ -134,7 +134,7 @@ export function MoodSelector({ spaceId }: MoodSelectorProps) {
 
       <div className="bg-pastel-purple/20 rounded-retro p-3">
         <p className="text-xs text-retro-medium">
-          💡 Moods are stored for 24 hours. Share whenever your feelings change!
+          Moods are stored for 24 hours. Share whenever your feelings change!
         </p>
       </div>
     </div>

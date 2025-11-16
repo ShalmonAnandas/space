@@ -90,7 +90,7 @@ export function SuttaButton({ spaceId }: SuttaButtonProps) {
 
   return (
     <div className="card-retro">
-      <h3 className="text-xl font-bold text-retro-dark mb-3">🤍 Sutta Button</h3>
+      <h3 className="text-xl font-bold text-retro-dark mb-3">Sutta Button</h3>
       <p className="text-sm text-retro-medium mb-4">
         Click once daily to let your partner know you are thinking of them. Click multiple times to
         send an SOS!
@@ -104,7 +104,7 @@ export function SuttaButton({ spaceId }: SuttaButtonProps) {
             canClick ? 'bg-pastel-pink animate-pulse-slow' : 'bg-gray-300'
           } disabled:opacity-50`}
         >
-          {loading ? '...' : canClick ? '🤍 Click Sutta' : '🤍 Already Clicked Today'}
+          {loading ? '...' : canClick ? 'Click Sutta' : 'Already Clicked Today'}
         </button>
       </div>
 
@@ -112,7 +112,7 @@ export function SuttaButton({ spaceId }: SuttaButtonProps) {
         <div className="bg-white/50 p-3 rounded-retro border-2 border-pastel-pink/30 mb-3">
           <p className="text-sm text-retro-dark">
             Clicks today: <span className="font-bold">{clickCount}</span>
-            {clickCount > 1 && ' 🚨 (SOS mode!)'}
+            {clickCount > 1 && ' (SOS mode!)'}
           </p>
         </div>
       )}
@@ -137,7 +137,7 @@ export function SuttaButton({ spaceId }: SuttaButtonProps) {
 
       <div className="bg-pastel-blue/20 rounded-retro p-3 mt-4">
         <p className="text-xs text-retro-medium">
-          💡 First click = normal notification. Additional clicks = SOS notification!
+          First click = normal notification. Additional clicks = SOS notification!
         </p>
       </div>
     </div>

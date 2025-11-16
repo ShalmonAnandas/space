@@ -25,22 +25,7 @@ export async function sendNotification(
 ) {
   const { title, body } = getNotificationText(type, payload);
 
-  // Always save to NotificationQueue for in-app fallback
-  await prisma.notificationQueue.create({
-    data: {
-      userId,
-      spaceId,
-      type,
-      content: {
-        title,
-        body,
-        ...payload,
-      },
-      read: false,
-    },
-  });
-
-  // Try to send push notification
+  // Send push notification only (no in-app queue)
   try {
     const subscriptions = await prisma.pushSubscription.findMany({
       where: { userId },
@@ -50,7 +35,7 @@ export async function sendNotification(
       try {
         await webpush.sendNotification(
           sub.subscription as any,
-          JSON.stringify({ title, body })
+          JSON.stringify({ title, body, spaceId })
         );
       } catch (error: any) {
         // If subscription is expired/invalid, delete it
@@ -66,6 +51,5 @@ export async function sendNotification(
     await Promise.allSettled(pushPromises);
   } catch (error) {
     console.error('Error sending push notifications:', error);
-    // Don't throw - notification is saved in queue anyway
   }
 }

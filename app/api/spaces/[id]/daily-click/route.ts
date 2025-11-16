@@ -84,14 +84,7 @@ export async function POST(
       });
     }
 
-    // Handle Frustration buttons (once per 24h limit)
-    if (recentClicks.length > 0) {
-      return NextResponse.json(
-        { error: 'You can only use this button once per 24 hours' },
-        { status: 400 }
-      );
-    }
-
+    // Handle Frustration buttons (no daily limit)
     // Log the click
     await prisma.dailyClick.create({
       data: {

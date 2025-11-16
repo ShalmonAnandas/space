@@ -101,7 +101,7 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
     <div className="space-y-4">
       <div className="card-retro bg-pastel-yellow/20 border-2 border-pastel-yellow">
         <p className="text-sm text-retro-dark">
-          🤫 <strong>Gossip Zone:</strong> Messages disappear after being read. This is NOT
+          <strong>Gossip Zone:</strong> Messages disappear after being read. This is NOT
           real-time chat - refresh to see new messages. For urgent matters, use the Notice Board or
           Sutta button!
         </p>
@@ -109,7 +109,7 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
 
       {/* Post Form */}
       <div className="card-retro">
-        <h3 className="text-xl font-bold text-retro-dark mb-3">✍️ Write Gossip</h3>
+        <h3 className="text-xl font-bold text-retro-dark mb-3">Write Gossip</h3>
 
         <form onSubmit={handlePost} className="space-y-3">
           <textarea
@@ -127,7 +127,7 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
 
           {error && (
             <div className="bg-red-100 border-2 border-red-300 rounded-retro p-3">
-              <p className="text-red-700 text-sm">❌ {error}</p>
+              <p className="text-red-700 text-sm">{error}</p>
             </div>
           )}
 
@@ -136,14 +136,14 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
             disabled={posting || !message.trim()}
             className="btn-retro bg-pastel-pink disabled:opacity-50"
           >
-            {posting ? 'Posting...' : '🤫 Post Gossip'}
+            {posting ? 'Posting...' : 'Post Gossip'}
           </button>
         </form>
       </div>
 
       {/* Messages List */}
       <div className="card-retro">
-        <h3 className="text-xl font-bold text-retro-dark mb-3">📬 Recent Gossip</h3>
+        <h3 className="text-xl font-bold text-retro-dark mb-3">Recent Gossip</h3>
 
         {messages.length === 0 ? (
           <p className="text-retro-medium">No gossip yet. Be the first to share!</p>
@@ -174,12 +174,12 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
                       onClick={() => handleReread(msg.id)}
                       className="btn-retro bg-pastel-green text-xs mt-2"
                     >
-                      👀 Mark as Re-read
+                      Mark as Re-read
                     </button>
                   )}
 
                   {msg.rereadAt && !isOwnMessage && (
-                    <p className="text-xs text-green-600 mt-2">✅ Re-read</p>
+                    <p className="text-xs text-green-600 mt-2">Re-read</p>
                   )}
                 </div>
               );
@@ -192,7 +192,7 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
       {lastMessage && lastMessage.postedBy !== userId && !lastMessage.rereadAt && (
         <div className="card-retro bg-pastel-blue/20 border-2 border-pastel-blue">
           <p className="text-sm text-retro-dark mb-3">
-            💡 You can re-read the last message to let your partner know you saw it:
+            You can re-read the last message to let your partner know you saw it:
           </p>
           <div className="bg-white/50 p-3 rounded-retro border-2 border-pastel-blue/30 mb-3">
             <p className="text-retro-dark text-sm">{lastMessage.message}</p>

@@ -54,7 +54,7 @@ self.addEventListener('push', (event) => {
   if (!event.data) return;
 
   const data = event.data.json();
-  const { title, body } = data;
+  const { title, body, spaceId } = data;
 
   const options = {
     body,
@@ -63,6 +63,7 @@ self.addEventListener('push', (event) => {
     vibrate: [200, 100, 200],
     tag: 'partner-notification',
     requireInteraction: false,
+    data: { spaceId }, // Store spaceId for click handler
   };
 
   event.waitUntil(
@@ -74,7 +75,24 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
+  const spaceId = event.notification.data?.spaceId;
+  const urlToOpen = spaceId ? `/space/${spaceId}` : '/';
+
   event.waitUntil(
-    clients.openWindow('/')
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      // Check if there's already a window open
+      for (const client of clientList) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          return client.focus().then(() => {
+            // Navigate to the space
+            return client.navigate(urlToOpen);
+          });
+        }
+      }
+      // If no window is open, open a new one
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
   );
 });

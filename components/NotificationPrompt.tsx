@@ -37,7 +37,7 @@ export function NotificationPrompt() {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="card-retro max-w-md w-full">
         <h2 className="text-2xl font-bold text-retro-dark mb-4">
-          🔔 Enable Notifications
+          Enable Notifications
         </h2>
         <p className="text-retro-dark mb-4">
           Notifications are essential for this app! You&apos;ll get instant updates when:
@@ -55,7 +55,7 @@ export function NotificationPrompt() {
             disabled={isLoading}
             className="btn-primary flex-1"
           >
-            {isLoading ? 'Enabling...' : '✅ Enable Notifications'}
+            {isLoading ? 'Enabling...' : 'Enable Notifications'}
           </button>
           <button
             onClick={handleDismiss}
@@ -67,7 +67,7 @@ export function NotificationPrompt() {
         {permission === 'denied' && (
           <div className="bg-red-100 border-2 border-red-300 rounded-retro p-3 mt-4">
             <p className="text-red-700 text-sm">
-              ⚠️ Notifications are blocked. Please enable them in your browser settings.
+              Notifications are blocked. Please enable them in your browser settings.
             </p>
           </div>
         )}

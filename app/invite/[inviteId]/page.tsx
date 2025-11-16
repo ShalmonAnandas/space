@@ -81,7 +81,7 @@ export default function InvitePage({ params }: { params: Promise<{ inviteId: str
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="card-retro max-w-md w-full text-center">
-          <h1 className="text-3xl font-bold text-retro-dark mb-4">❌ Oops!</h1>
+          <h1 className="text-3xl font-bold text-retro-dark mb-4">Oops!</h1>
           <p className="text-retro-medium mb-6">{error}</p>
           <button onClick={() => router.push('/dashboard')} className="btn-primary">
             Go to Dashboard
@@ -95,7 +95,7 @@ export default function InvitePage({ params }: { params: Promise<{ inviteId: str
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card-retro max-w-md w-full text-center space-y-6">
         <div>
-          <h1 className="text-4xl font-bold text-retro-dark mb-2">🎉 You are Invited!</h1>
+          <h1 className="text-4xl font-bold text-retro-dark mb-2">You are Invited!</h1>
           <p className="text-retro-medium">
             Join <span className="font-bold">{spaceInfo?.name}</span>
           </p>
