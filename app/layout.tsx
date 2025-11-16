@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Partner App",
   description: "A private shared space for two partners",
   manifest: "/manifest.json",
-  themeColor: "#D4A5FF",
+  themeColor: "#b1d18a",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

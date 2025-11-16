@@ -53,13 +53,13 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card-retro max-w-md w-full space-y-6">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-retro-dark mb-2">Join Partner App</h1>
-          <p className="text-retro-medium">Create your private space</p>
+          <h1 className="text-4xl font-semibold mb-2">Join Partner App</h1>
+          <p className="opacity-70">Create your private space</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="username" className="block text-sm font-bold text-retro-dark mb-2">
+            <label htmlFor="username" className="block text-sm font-semibold mb-2">
               Username
             </label>
             <input
@@ -75,7 +75,7 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-bold text-retro-dark mb-2">
+            <label htmlFor="password" className="block text-sm font-semibold mb-2">
               Password
             </label>
             <input
@@ -91,7 +91,7 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-bold text-retro-dark mb-2">
+            <label htmlFor="confirmPassword" className="block text-sm font-semibold mb-2">
               Confirm Password
             </label>
             <input
@@ -107,7 +107,7 @@ export default function RegisterPage() {
           </div>
 
           {error && (
-            <div className="bg-pastel-rose border-4 border-red-400 text-red-800 px-4 py-3 rounded-retro">
+            <div className="bg-md-error-container text-md-on-error-container px-4 py-3 rounded border border-md-outline-variant">
               {error}
             </div>
           )}
@@ -122,9 +122,9 @@ export default function RegisterPage() {
         </form>
 
         <div className="text-center">
-          <p className="text-retro-medium">
+          <p className="opacity-70">
             Already have an account?{' '}
-            <Link href="/login" className="text-pastel-purple font-bold hover:underline">
+            <Link href="/login" className="text-md-primary font-semibold hover:underline">
               Login here
             </Link>
           </p>

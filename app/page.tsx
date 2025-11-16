@@ -22,16 +22,16 @@ export default function Home() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card-retro max-w-2xl w-full text-center space-y-8">
         <div>
-          <h1 className="text-6xl font-bold text-retro-dark mb-4">
+          <h1 className="text-6xl font-bold mb-4">
             Partner App
           </h1>
-          <p className="text-xl text-retro-medium mb-8">
+          <p className="text-xl opacity-80 mb-8">
             Your private shared space for two
           </p>
         </div>
 
         <div className="space-y-4">
-          <p className="text-retro-dark">
+          <p>
             Share moods, vent frustrations, and stay connected with your partner through unique, asynchronous communication channels.
           </p>
         </div>
@@ -45,8 +45,8 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="pt-8 border-t-4 border-pastel-purple/30">
-          <p className="text-sm text-retro-medium">
+        <div className="pt-8 border-t border-md-outline-variant">
+          <p className="text-sm opacity-70">
             Notice Board • Sutta Button • Mood Sharing • Gossip • Frustration Vents
           </p>
         </div>

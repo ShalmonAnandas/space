@@ -29,7 +29,7 @@ export function NotificationBadge() {
   if (unreadCount === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm shadow-lg z-50">
+    <div className="fixed top-4 right-4 bg-md-error text-md-on-error rounded w-8 h-8 flex items-center justify-center font-semibold text-sm shadow-md z-50">
       {unreadCount > 9 ? '9+' : unreadCount}
     </div>
   );

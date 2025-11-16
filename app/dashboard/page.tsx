@@ -127,10 +127,10 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="card-retro flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-retro-dark">
+            <h1 className="text-3xl font-semibold">
               Hey, {user?.username}!
             </h1>
-            <p className="text-retro-medium">Your shared spaces</p>
+            <p className="opacity-70">Your shared spaces</p>
           </div>
           <button onClick={handleLogout} className="btn-secondary">
             Logout
@@ -150,28 +150,28 @@ export default function DashboardPage() {
         <div className="space-y-4">
           {spaces.length === 0 ? (
             <div className="card-retro text-center">
-              <p className="text-retro-medium">
+              <p className="opacity-70">
                 No spaces yet. Create one to get started!
               </p>
             </div>
           ) : (
             spaces.map((space: any) => (
-              <div key={space.id} className="card-retro hover:shadow-retro transition-shadow">
+              <div key={space.id} className="card-retro hover:shadow-lg transition-shadow">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="text-2xl font-bold text-retro-dark mb-2">
+                    <h3 className="text-2xl font-semibold mb-2">
                       {space.name}
                     </h3>
                     <div className="flex gap-2 flex-wrap">
-                      <span className="badge-retro bg-pastel-purple">
+                      <span className="badge-retro bg-md-primary-container text-md-on-primary-container">
                         {space.user1.username}
                       </span>
                       {space.user2 ? (
-                        <span className="badge-retro bg-pastel-green">
+                        <span className="badge-retro bg-md-tertiary-container text-md-on-tertiary-container">
                           {space.user2.username}
                         </span>
                       ) : (
-                        <span className="badge-retro bg-pastel-yellow">
+                        <span className="badge-retro bg-md-secondary-container text-md-on-secondary-container">
                           Waiting for partner...
                         </span>
                       )}
@@ -204,15 +204,15 @@ export default function DashboardPage() {
 
       {/* Invite Modal */}
       {showInviteModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
           <div className="card-retro max-w-lg w-full">
-            <h2 className="text-2xl font-bold text-retro-dark mb-4">
+            <h2 className="text-2xl font-semibold mb-4">
               Invite Link Generated!
             </h2>
-            <p className="text-retro-medium mb-4">
+            <p className="opacity-80 mb-4">
               Share this link with your partner to join this space:
             </p>
-            <div className="bg-pastel-purple-light p-4 rounded-retro mb-4 break-all">
+            <div className="bg-md-surface-container-high p-4 rounded mb-4 break-all border border-md-outline-variant">
               <code className="text-sm">{inviteLink}</code>
             </div>
             <div className="flex gap-2">

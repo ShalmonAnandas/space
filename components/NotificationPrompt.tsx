@@ -9,8 +9,8 @@ export function NotificationPrompt() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Show prompt if notifications are supported and not subscribed
-    if (isSupported && !isSubscribed && permission !== 'denied') {
+    // Show prompt only if notifications are supported, not subscribed, and permission is not granted or denied
+    if (isSupported && !isSubscribed && permission === 'default') {
       setShowPrompt(true);
     }
   }, [isSupported, isSubscribed, permission]);
@@ -34,15 +34,15 @@ export function NotificationPrompt() {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
       <div className="card-retro max-w-md w-full">
-        <h2 className="text-2xl font-bold text-retro-dark mb-4">
+        <h2 className="text-2xl font-semibold mb-4">
           Enable Notifications
         </h2>
-        <p className="text-retro-dark mb-4">
+        <p className="mb-4">
           Notifications are essential for this app! You&apos;ll get instant updates when:
         </p>
-        <ul className="list-disc list-inside text-retro-dark mb-6 space-y-2">
+        <ul className="list-disc list-inside mb-6 space-y-2 opacity-90">
           <li>Your partner posts on the Notice Board</li>
           <li>Your partner sends you gossip</li>
           <li>Your partner shares their mood</li>
@@ -65,8 +65,8 @@ export function NotificationPrompt() {
           </button>
         </div>
         {permission === 'denied' && (
-          <div className="bg-red-100 border-2 border-red-300 rounded-retro p-3 mt-4">
-            <p className="text-red-700 text-sm">
+          <div className="bg-md-error-container text-md-on-error-container border border-md-outline-variant rounded p-3 mt-4">
+            <p className="text-sm">
               Notifications are blocked. Please enable them in your browser settings.
             </p>
           </div>

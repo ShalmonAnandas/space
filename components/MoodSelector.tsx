@@ -82,20 +82,20 @@ export function MoodSelector({ spaceId }: MoodSelectorProps) {
 
   return (
     <div className="card-retro">
-      <h3 className="text-xl font-bold text-retro-dark mb-3">Mood Share</h3>
-      <p className="text-sm text-retro-medium mb-4">
+      <h3 className="text-xl font-semibold mb-3">Mood Share</h3>
+      <p className="text-sm opacity-80 mb-4">
         Share how you are feeling right now. Your partner will be notified!
       </p>
 
       {/* Partner's Mood */}
       {partnerMood && (
-        <div className="bg-white/50 p-4 rounded-retro border-2 border-pastel-purple/30 mb-4">
-          <p className="text-sm text-retro-medium mb-1">Your partner is feeling:</p>
+        <div className="bg-md-surface-container-high p-4 rounded border border-md-outline-variant mb-4">
+          <p className="text-sm opacity-70 mb-1">Your partner is feeling:</p>
           <div className="flex items-center gap-2">
             <span className="text-3xl">{getMoodInfo(partnerMood.mood)?.emoji}</span>
-            <span className="text-lg font-bold text-retro-dark">{partnerMood.mood}</span>
+            <span className="text-lg font-semibold">{partnerMood.mood}</span>
           </div>
-          <p className="text-xs text-retro-medium mt-1">
+          <p className="text-xs opacity-70 mt-1">
             Shared {new Date(partnerMood.createdAt).toLocaleString()}
           </p>
         </div>
@@ -108,32 +108,32 @@ export function MoodSelector({ spaceId }: MoodSelectorProps) {
             key={mood.value}
             onClick={() => handleMoodSelect(mood.value)}
             disabled={loading}
-            className={`${mood.color} p-4 rounded-retro border-2 ${
+            className={`bg-md-surface-container-high hover:bg-md-surface-container-highest p-4 rounded border ${
               selectedMood === mood.value
-                ? 'border-retro-dark shadow-retro scale-105'
-                : 'border-transparent hover:border-retro-medium'
+                ? 'border-md-primary ring-2 ring-md-primary/20'
+                : 'border-md-outline-variant'
             } transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             <div className="text-3xl mb-1">{mood.emoji}</div>
-            <div className="text-sm font-bold text-retro-dark">{mood.value}</div>
+            <div className="text-sm font-semibold">{mood.value}</div>
           </button>
         ))}
       </div>
 
       {message && (
-        <div className="bg-green-100 border-2 border-green-300 rounded-retro p-3 mb-3">
-          <p className="text-green-700 text-sm">✅ {message}</p>
+        <div className="bg-md-tertiary-container text-md-on-tertiary-container border border-md-outline-variant rounded p-3 mb-3">
+          <p className="text-sm">✅ {message}</p>
         </div>
       )}
 
       {error && (
-        <div className="bg-red-100 border-2 border-red-300 rounded-retro p-3 mb-3">
-          <p className="text-red-700 text-sm">❌ {error}</p>
+        <div className="bg-md-error-container text-md-on-error-container border border-md-outline-variant rounded p-3 mb-3">
+          <p className="text-sm">❌ {error}</p>
         </div>
       )}
 
-      <div className="bg-pastel-purple/20 rounded-retro p-3">
-        <p className="text-xs text-retro-medium">
+      <div className="bg-md-surface-container-high border border-md-outline-variant rounded p-3">
+        <p className="text-xs opacity-80">
           Moods are stored for 24 hours. Share whenever your feelings change!
         </p>
       </div>

@@ -105,12 +105,12 @@ export function FrustrationButtons({ spaceId }: FrustrationButtonsProps) {
 
   return (
     <div className="card-retro">
-      <h3 className="text-xl font-bold text-retro-dark mb-3">Frustration Buttons</h3>
-      <p className="text-sm text-retro-medium mb-4">
+      <h3 className="text-xl font-semibold mb-3">Frustration Buttons</h3>
+      <p className="text-sm opacity-80 mb-4">
         Vent your frustrations! Click anytime to notify your partner. They will understand.
       </p>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {buttons.map((button) => {
           const buttonStatus = status[button.type];
           const canClick = buttonStatus?.canClick ?? true;
@@ -119,30 +119,30 @@ export function FrustrationButtons({ spaceId }: FrustrationButtonsProps) {
           const error = errors[button.type];
 
           return (
-            <div key={button.type} className="border-2 border-retro-medium/20 rounded-retro p-4">
-              <div className="flex items-center gap-3 mb-3">
+            <div key={button.type} className="border-l-4 border-md-primary pl-4 py-2">
+              <div className="flex items-center gap-3 mb-2">
                 <div className="flex-1">
-                  <h4 className="font-bold text-retro-dark">{button.label}</h4>
+                  <h4 className="font-semibold">{button.label}</h4>
                 </div>
               </div>
 
               <button
                 onClick={() => handleClick(button.type)}
                 disabled={isLoading}
-                className={`btn-retro w-full ${button.color} disabled:opacity-50 disabled:cursor-not-allowed`}
+                className="btn-retro w-full disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? '...' : 'Click to Vent'}
               </button>
 
               {message && (
-                <div className="bg-green-100 border-2 border-green-300 rounded-retro p-2 mt-2">
-                  <p className="text-green-700 text-xs">{message}</p>
+                <div className="bg-md-tertiary-container text-md-on-tertiary-container border border-md-outline-variant rounded p-2 mt-2">
+                  <p className="text-xs">{message}</p>
                 </div>
               )}
 
               {error && (
-                <div className="bg-red-100 border-2 border-red-300 rounded-retro p-2 mt-2">
-                  <p className="text-red-700 text-xs">{error}</p>
+                <div className="bg-md-error-container text-md-on-error-container border border-md-outline-variant rounded p-2 mt-2">
+                  <p className="text-xs">{error}</p>
                 </div>
               )}
             </div>
@@ -150,8 +150,8 @@ export function FrustrationButtons({ spaceId }: FrustrationButtonsProps) {
         })}
       </div>
 
-      <div className="bg-pastel-blue/20 rounded-retro p-3 mt-4">
-        <p className="text-xs text-retro-medium">
+      <div className="border border-md-outline-variant rounded p-3 mt-4 bg-md-surface-container-high">
+        <p className="text-xs opacity-80">
           Each button can be clicked anytime. Your partner will receive a notification with
           the specific frustration type!
         </p>

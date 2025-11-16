@@ -172,51 +172,51 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
     <div className="space-y-4">
       {/* Current Notice */}
       <div className="card-retro">
-        <h2 className="text-2xl font-bold text-retro-dark mb-4">Notice Board</h2>
+        <h2 className="text-2xl font-semibold mb-4">Notice Board</h2>
 
         {notice ? (
           <div className="space-y-4">
-            <div className="bg-white/50 p-4 rounded-retro border-2 border-pastel-purple/30">
-              <p className="text-lg text-retro-dark whitespace-pre-wrap mb-2">{notice.message}</p>
-              <div className="flex justify-between items-center text-sm text-retro-medium">
+            <div className="bg-md-surface-container-high p-4 rounded border border-md-outline-variant">
+              <p className="text-lg whitespace-pre-wrap mb-2">{notice.message}</p>
+              <div className="flex justify-between items-center text-sm opacity-70">
                 <span>Posted by: {notice.postedBy === userId ? 'You' : 'Partner'}</span>
                 {notice.editedAt && (
-                  <span className="badge-retro bg-pastel-yellow">Edited</span>
+                  <span className="badge-retro bg-md-secondary-container text-md-on-secondary-container">Edited</span>
                 )}
               </div>
             </div>
 
             {notice.postedBy !== userId && !notice.seenAt && (
-              <button onClick={markAsSeen} className="btn-retro bg-pastel-green">
+              <button onClick={markAsSeen} className="btn-success">
                 Mark as Seen
               </button>
             )}
 
             {notice.postedBy !== userId && notice.seenAt && (
-              <p className="text-sm text-retro-medium">Seen</p>
+              <p className="text-sm opacity-70">Seen</p>
             )}
 
             {canEdit && !editing && (
-              <button onClick={startEditing} className="btn-retro bg-pastel-yellow">
+              <button onClick={startEditing} className="btn-secondary">
                 Edit (one-time only)
               </button>
             )}
 
             {notice.editedAt && (
-              <p className="text-sm text-retro-medium">
+              <p className="text-sm opacity-70">
                 Note: This message has already been edited once.
               </p>
             )}
           </div>
         ) : (
-          <p className="text-retro-medium">No notice posted yet.</p>
+          <p className="opacity-70">No notice posted yet.</p>
         )}
       </div>
 
       {/* Post/Edit Form */}
       {(canPost || editing) && (
         <div className="card-retro">
-          <h3 className="text-xl font-bold text-retro-dark mb-3">
+          <h3 className="text-xl font-semibold mb-3">
             {editing ? 'Edit Notice' : 'Post New Notice'}
           </h3>
 
@@ -231,18 +231,18 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
             />
 
             <div className="flex justify-between items-center">
-              <span className="text-sm text-retro-medium">{message.length}/500</span>
+              <span className="text-sm opacity-70">{message.length}/500</span>
             </div>
 
             {error && (
-              <div className="bg-red-100 border-2 border-red-300 rounded-retro p-3">
-                <p className="text-red-700 text-sm">{error}</p>
+              <div className="bg-md-error-container text-md-on-error-container border border-md-outline-variant rounded p-3">
+                <p className="text-sm">{error}</p>
               </div>
             )}
 
             {getCooldownMessage() && (
-              <div className="bg-pastel-yellow/30 border-2 border-pastel-yellow rounded-retro p-3">
-                <p className="text-retro-dark text-sm">⏳ {getCooldownMessage()}</p>
+              <div className="bg-md-secondary-container text-md-on-secondary-container border border-md-outline-variant rounded p-3">
+                <p className="text-sm">⏳ {getCooldownMessage()}</p>
               </div>
             )}
 
@@ -250,7 +250,7 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
               <button
                 type="submit"
                 disabled={posting || !message.trim()}
-                className="btn-retro bg-pastel-purple disabled:opacity-50"
+                className="btn-retro disabled:opacity-50"
               >
                 {posting ? 'Posting...' : editing ? 'Save Edit' : 'Post Notice'}
               </button>
@@ -271,8 +271,8 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
       )}
 
       {!canPost && !editing && notice && (
-        <div className="card-retro bg-pastel-pink/20">
-          <p className="text-retro-dark">
+        <div className="card-retro border-l-4 border-md-error">
+          <p>
             You can post a new notice once your partner has seen your current message.
           </p>
         </div>

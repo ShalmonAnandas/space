@@ -90,8 +90,8 @@ export function SuttaButton({ spaceId }: SuttaButtonProps) {
 
   return (
     <div className="card-retro">
-      <h3 className="text-xl font-bold text-retro-dark mb-3">Sutta Button</h3>
-      <p className="text-sm text-retro-medium mb-4">
+      <h3 className="text-xl font-semibold mb-3">Sutta Button</h3>
+      <p className="text-sm opacity-80 mb-4">
         Click once daily to let your partner know you are thinking of them. Click multiple times to
         send an SOS!
       </p>
@@ -101,42 +101,42 @@ export function SuttaButton({ spaceId }: SuttaButtonProps) {
           onClick={handleClick}
           disabled={loading || !canClick}
           className={`btn-retro flex-1 text-lg py-4 ${
-            canClick ? 'bg-pastel-pink animate-pulse-slow' : 'bg-gray-300'
-          } disabled:opacity-50`}
+            !canClick ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
         >
-          {loading ? '...' : canClick ? 'Click Sutta' : 'Already Clicked Today'}
+          {loading ? '...' : canClick ? 'Sutta Break' : 'Already Clicked Today'}
         </button>
       </div>
 
       {clickCount > 0 && (
-        <div className="bg-white/50 p-3 rounded-retro border-2 border-pastel-pink/30 mb-3">
-          <p className="text-sm text-retro-dark">
-            Clicks today: <span className="font-bold">{clickCount}</span>
+        <div className="bg-md-surface-container-high p-3 rounded border border-md-outline-variant mb-3">
+          <p className="text-sm">
+            Clicks today: <span className="font-semibold">{clickCount}</span>
             {clickCount > 1 && ' (SOS mode!)'}
           </p>
         </div>
       )}
 
       {!canClick && getTimeUntilReset() && (
-        <div className="bg-pastel-purple/20 rounded-retro p-3 mb-3">
-          <p className="text-sm text-retro-dark">⏳ Resets in: {getTimeUntilReset()}</p>
+        <div className="bg-md-primary-container text-md-on-primary-container rounded p-3 mb-3 border border-md-outline-variant">
+          <p className="text-sm">⏳ Resets in: {getTimeUntilReset()}</p>
         </div>
       )}
 
       {message && (
-        <div className="bg-green-100 border-2 border-green-300 rounded-retro p-3 mb-3">
-          <p className="text-green-700 text-sm">✅ {message}</p>
+        <div className="bg-md-tertiary-container text-md-on-tertiary-container border border-md-outline-variant rounded p-3 mb-3">
+          <p className="text-sm">✅ {message}</p>
         </div>
       )}
 
       {error && (
-        <div className="bg-red-100 border-2 border-red-300 rounded-retro p-3">
-          <p className="text-red-700 text-sm">❌ {error}</p>
+        <div className="bg-md-error-container text-md-on-error-container border border-md-outline-variant rounded p-3">
+          <p className="text-sm">❌ {error}</p>
         </div>
       )}
 
-      <div className="bg-pastel-blue/20 rounded-retro p-3 mt-4">
-        <p className="text-xs text-retro-medium">
+      <div className="bg-md-surface-container-high border border-md-outline-variant rounded p-3 mt-4">
+        <p className="text-xs opacity-80">
           First click = normal notification. Additional clicks = SOS notification!
         </p>
       </div>

@@ -103,18 +103,18 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
         <div className="card-retro">
           <div className="flex justify-between items-start mb-4">
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-retro-dark mb-2">
+              <h1 className="text-3xl font-semibold mb-2">
                 {space.name}
               </h1>
-              <p className="text-retro-medium">
+              <p className="opacity-70">
                 You & {partner?.username}
               </p>
               {partnerMood && (
-                <div className="mt-3 bg-white/50 p-3 rounded-retro border-2 border-pastel-purple/30">
-                  <p className="text-sm text-retro-medium mb-1">Partner is feeling:</p>
+                <div className="mt-3 bg-md-surface-container-high p-3 rounded border border-md-outline-variant">
+                  <p className="text-sm opacity-70 mb-1">Partner is feeling:</p>
                   <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-retro-dark">{partnerMood.mood}</span>
-                    <span className="text-xs text-retro-medium">
+                    <span className="text-lg font-semibold">{partnerMood.mood}</span>
+                    <span className="text-xs opacity-70">
                       • {new Date(partnerMood.createdAt).toLocaleString()}
                     </span>
                   </div>
@@ -135,30 +135,30 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => setActiveTab('notice')}
-              className={`px-4 py-2 rounded-retro font-bold transition-all ${
+              className={`px-4 py-2 rounded font-semibold transition-all ${
                 activeTab === 'notice'
-                  ? 'bg-pastel-purple text-white shadow-retro'
-                  : 'bg-white/50 text-retro-dark hover:bg-white/80'
+                  ? 'bg-md-primary-container text-md-on-primary-container shadow-md'
+                  : 'bg-md-surface-container-high hover:bg-md-surface-container-highest'
               }`}
             >
               Notice Board
             </button>
             <button
               onClick={() => setActiveTab('gossip')}
-              className={`px-4 py-2 rounded-retro font-bold transition-all ${
+              className={`px-4 py-2 rounded font-semibold transition-all ${
                 activeTab === 'gossip'
-                  ? 'bg-pastel-purple text-white shadow-retro'
-                  : 'bg-white/50 text-retro-dark hover:bg-white/80'
+                  ? 'bg-md-primary-container text-md-on-primary-container shadow-md'
+                  : 'bg-md-surface-container-high hover:bg-md-surface-container-highest'
               }`}
             >
               Gossip
             </button>
             <button
               onClick={() => setActiveTab('features')}
-              className={`px-4 py-2 rounded-retro font-bold transition-all ${
+              className={`px-4 py-2 rounded font-semibold transition-all ${
                 activeTab === 'features'
-                  ? 'bg-pastel-purple text-white shadow-retro'
-                  : 'bg-white/50 text-retro-dark hover:bg-white/80'
+                  ? 'bg-md-primary-container text-md-on-primary-container shadow-md'
+                  : 'bg-md-surface-container-high hover:bg-md-surface-container-highest'
               }`}
             >
               Features

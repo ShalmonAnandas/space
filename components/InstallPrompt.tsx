@@ -9,9 +9,9 @@ export function InstallPrompt() {
 
   if (isIOSDevice) {
     return (
-      <div id="install-prompt" className="fixed bottom-4 left-4 right-4 bg-pastel-purple p-4 rounded-lg shadow-lg z-50">
-        <h3 className="font-bold text-gray-800 mb-2">Install Partner App</h3>
-        <p className="text-sm text-gray-700 mb-3">
+      <div id="install-prompt" className="fixed bottom-4 left-4 right-4 bg-md-primary-container text-md-on-primary-container p-4 rounded shadow-lg z-50">
+        <h3 className="font-semibold mb-2">Install Partner App</h3>
+        <p className="text-sm opacity-90 mb-3">
           Tap the Share button and select &quot;Add to Home Screen&quot;
         </p>
         <button
@@ -19,7 +19,7 @@ export function InstallPrompt() {
             const element = document.getElementById('install-prompt');
             if (element) element.style.display = 'none';
           }}
-          className="text-sm text-gray-600 underline"
+          className="text-sm opacity-80 underline"
         >
           Dismiss
         </button>
@@ -28,15 +28,15 @@ export function InstallPrompt() {
   }
 
   return (
-    <div id="install-prompt" className="fixed bottom-4 left-4 right-4 bg-pastel-purple p-4 rounded-lg shadow-lg z-50">
-      <h3 className="font-bold text-gray-800 mb-2">Install Partner App</h3>
-      <p className="text-sm text-gray-700 mb-3">
+    <div id="install-prompt" className="fixed bottom-4 left-4 right-4 bg-md-primary-container text-md-on-primary-container p-4 rounded shadow-lg z-50">
+      <h3 className="font-semibold mb-2">Install Partner App</h3>
+      <p className="text-sm opacity-90 mb-3">
         Install for the best experience
       </p>
       <div className="flex gap-2">
         <button
           onClick={installApp}
-          className="bg-white text-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-100"
+          className="bg-md-surface text-md-on-surface px-4 py-2 rounded font-medium hover:bg-md-surface-container-high"
         >
           Install
         </button>
@@ -45,7 +45,7 @@ export function InstallPrompt() {
             const element = document.getElementById('install-prompt');
             if (element) element.style.display = 'none';
           }}
-          className="text-sm text-gray-600 underline"
+          className="text-sm opacity-80 underline"
         >
           Maybe later
         </button>

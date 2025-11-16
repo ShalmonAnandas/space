@@ -2,48 +2,138 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Material Design 3 Dark Theme Color Tokens */
+:root {
+  --md-sys-color-primary: rgb(177 209 138);
+  --md-sys-color-surface-tint: rgb(177 209 138);
+  --md-sys-color-on-primary: rgb(31 55 1);
+  --md-sys-color-primary-container: rgb(53 78 22);
+  --md-sys-color-on-primary-container: rgb(205 237 163);
+  --md-sys-color-secondary: rgb(191 203 173);
+  --md-sys-color-on-secondary: rgb(42 51 30);
+  --md-sys-color-secondary-container: rgb(64 74 51);
+  --md-sys-color-on-secondary-container: rgb(220 231 200);
+  --md-sys-color-tertiary: rgb(160 208 203);
+  --md-sys-color-on-tertiary: rgb(0 55 53);
+  --md-sys-color-tertiary-container: rgb(31 78 75);
+  --md-sys-color-on-tertiary-container: rgb(188 236 231);
+  --md-sys-color-error: rgb(255 180 171);
+  --md-sys-color-on-error: rgb(105 0 5);
+  --md-sys-color-error-container: rgb(147 0 10);
+  --md-sys-color-on-error-container: rgb(255 218 214);
+  --md-sys-color-background: rgb(18 20 14);
+  --md-sys-color-on-background: rgb(226 227 216);
+  --md-sys-color-surface: rgb(18 20 14);
+  --md-sys-color-on-surface: rgb(226 227 216);
+  --md-sys-color-surface-variant: rgb(68 72 61);
+  --md-sys-color-on-surface-variant: rgb(197 200 186);
+  --md-sys-color-outline: rgb(143 146 133);
+  --md-sys-color-outline-variant: rgb(68 72 61);
+  --md-sys-color-shadow: rgb(0 0 0);
+  --md-sys-color-scrim: rgb(0 0 0);
+  --md-sys-color-inverse-surface: rgb(226 227 216);
+  --md-sys-color-inverse-on-surface: rgb(47 49 42);
+  --md-sys-color-inverse-primary: rgb(76 102 43);
+  --md-sys-color-primary-fixed: rgb(205 237 163);
+  --md-sys-color-on-primary-fixed: rgb(16 32 0);
+  --md-sys-color-primary-fixed-dim: rgb(177 209 138);
+  --md-sys-color-on-primary-fixed-variant: rgb(53 78 22);
+  --md-sys-color-secondary-fixed: rgb(220 231 200);
+  --md-sys-color-on-secondary-fixed: rgb(21 30 11);
+  --md-sys-color-secondary-fixed-dim: rgb(191 203 173);
+  --md-sys-color-on-secondary-fixed-variant: rgb(64 74 51);
+  --md-sys-color-tertiary-fixed: rgb(188 236 231);
+  --md-sys-color-on-tertiary-fixed: rgb(0 32 30);
+  --md-sys-color-tertiary-fixed-dim: rgb(160 208 203);
+  --md-sys-color-on-tertiary-fixed-variant: rgb(31 78 75);
+  --md-sys-color-surface-dim: rgb(18 20 14);
+  --md-sys-color-surface-bright: rgb(56 58 50);
+  --md-sys-color-surface-container-lowest: rgb(12 15 9);
+  --md-sys-color-surface-container-low: rgb(26 28 22);
+  --md-sys-color-surface-container: rgb(30 32 26);
+  --md-sys-color-surface-container-high: rgb(40 43 36);
+  --md-sys-color-surface-container-highest: rgb(51 54 46);
+}
+
 @layer base {
   body {
-    @apply bg-gradient-to-br from-pastel-pink via-pastel-purple to-pastel-blue min-h-screen;
+    background-color: var(--md-sys-color-background);
+    color: var(--md-sys-color-on-background);
+    min-height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
   }
 }
 
 @layer components {
   .btn-retro {
-    @apply px-6 py-3 rounded-retro shadow-retro font-bold transition-all duration-200;
-    @apply hover:translate-x-1 hover:translate-y-1 hover:shadow-none;
+    @apply px-6 py-3 rounded font-semibold transition-colors duration-200;
+    background-color: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+  }
+  
+  .btn-retro:hover {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
   }
   
   .btn-primary {
-    @apply btn-retro bg-pastel-purple text-retro-dark;
+    @apply btn-retro;
   }
   
   .btn-secondary {
-    @apply btn-retro bg-pastel-peach text-retro-dark;
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    @apply px-6 py-3 rounded font-semibold transition-colors duration-200;
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--md-sys-color-secondary);
+    color: var(--md-sys-color-on-secondary);
   }
   
   .btn-success {
-    @apply btn-retro bg-pastel-green text-retro-dark;
+    background-color: var(--md-sys-color-tertiary-container);
+    color: var(--md-sys-color-on-tertiary-container);
+    @apply px-6 py-3 rounded font-semibold transition-colors duration-200;
+  }
+  
+  .btn-success:hover {
+    background-color: var(--md-sys-color-tertiary);
+    color: var(--md-sys-color-on-tertiary);
   }
   
   .btn-danger {
-    @apply btn-retro bg-pastel-rose text-retro-dark;
+    background-color: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
+    @apply px-6 py-3 rounded font-semibold transition-colors duration-200;
+  }
+  
+  .btn-danger:hover {
+    background-color: var(--md-sys-color-error);
+    color: var(--md-sys-color-on-error);
   }
   
   .card-retro {
-    @apply bg-white/90 backdrop-blur-sm rounded-retro shadow-retro-lg p-6;
-    @apply border-4 border-pastel-purple/30;
+    background-color: var(--md-sys-color-surface-container);
+    color: var(--md-sys-color-on-surface);
+    @apply rounded shadow-md p-6 border border-[var(--md-sys-color-outline-variant)];
   }
   
   .input-retro {
-    @apply w-full px-4 py-3 rounded-retro border-4 border-pastel-purple/30;
-    @apply focus:outline-none focus:border-pastel-purple focus:ring-4 focus:ring-pastel-purple/20;
-    @apply bg-white/90 text-retro-dark placeholder-retro-medium/50;
+    background-color: var(--md-sys-color-surface-variant);
+    color: var(--md-sys-color-on-surface-variant);
+    border-color: var(--md-sys-color-outline);
+    @apply w-full px-4 py-3 rounded border;
+    @apply focus:outline-none focus:border-[var(--md-sys-color-primary)] focus:ring-2 focus:ring-[var(--md-sys-color-primary)]/20;
+  }
+  
+  .input-retro::placeholder {
+    color: var(--md-sys-color-on-surface-variant);
+    opacity: 0.6;
   }
   
   .badge-retro {
-    @apply inline-flex items-center justify-center px-3 py-1 rounded-full;
-    @apply text-xs font-bold shadow-retro;
+    @apply inline-flex items-center justify-center px-3 py-1 rounded;
+    @apply text-xs font-semibold shadow-sm;
   }
 }
