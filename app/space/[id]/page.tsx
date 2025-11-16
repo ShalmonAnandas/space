@@ -107,7 +107,7 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
             }`}
           >
             <NotebookPen size={16} />
-            <span>Notice board</span>
+            <span>What are the vibes today?</span>
           </button>
           <button
             onClick={() => setActiveTab('gossip')}
@@ -116,7 +116,7 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
             }`}
           >
             <MessageSquare size={16} />
-            <span>Gossip stream</span>
+            <span>Gossip</span>
           </button>
         </section>
 

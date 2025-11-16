@@ -111,7 +111,7 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
             <Sparkles size={20} className="text-accent-strong" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-xl font-semibold">Gossip stream</h3>
+            <h3 className="text-xl font-semibold">Gossip</h3>
             <p className="text-sm text-neutral-400">
               Share a fleeting thought. When your partner reacts, the entry fades away.
             </p>

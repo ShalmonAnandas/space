@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Toast } from './Toast';
 import { AlertTriangle, Briefcase, UserX, LogOut, X } from 'lucide-react';
 import { Spinner } from '@/components/ui/Spinner';
@@ -11,19 +12,24 @@ interface FrustrationButtonsProps {
 }
 
 const VENT_OPTIONS = [
-  { type: 'project', label: 'This project is cursed', icon: Briefcase },
-  { type: 'junior', label: 'My junior is chaos', icon: UserX },
-  { type: 'resign', label: 'I might resign today', icon: LogOut },
+  { type: 'project', label: 'Fuck this project', icon: Briefcase },
+  { type: 'junior', label: 'I hate my junior', icon: UserX },
+  { type: 'resign', label: 'I\'m gonna resign', icon: LogOut },
 ];
 
 export function FrustrationButtons({ spaceId, partnerName }: FrustrationButtonsProps) {
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [pendingType, setPendingType] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleClick = async (buttonType: string) => {
-    setLoading(true);
+    setPendingType(buttonType);
 
     try {
       const response = await fetch(`/api/spaces/${spaceId}/daily-click`, {
@@ -46,7 +52,7 @@ export function FrustrationButtons({ spaceId, partnerName }: FrustrationButtonsP
       setShowToast(true);
       setShowModal(false);
     } finally {
-      setLoading(false);
+      setPendingType(null);
     }
   };
 
@@ -57,46 +63,49 @@ export function FrustrationButtons({ spaceId, partnerName }: FrustrationButtonsP
         <span>Vent</span>
       </button>
 
-      {showModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-xs bg-[rgba(5,7,12,0.72)]"
-          onClick={() => setShowModal(false)}
-        >
+      {showModal && isMounted &&
+        createPortal(
           <div
-            className="surface-panel max-w-md w-full space-y-5 animate-fade-in"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 backdrop-blur-xs bg-[rgba(5,7,12,0.72)]"
+            onClick={() => setShowModal(false)}
           >
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-xl font-semibold">Vent your frustration</h3>
-                <p className="text-sm text-neutral-400">
-                  Trigger a discreet alert so they know you need a minute.
-                </p>
+            <div
+              className="surface-panel max-w-md w-full space-y-5 animate-fade-in"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-semibold">Vent your frustration</h3>
+                  <p className="text-sm text-neutral-400">
+                    Trigger a discreet alert so they know you need a minute.
+                  </p>
+                </div>
+                <button className="btn-ghost" onClick={() => setShowModal(false)} aria-label="Close vent modal">
+                  <X size={18} />
+                </button>
               </div>
-              <button className="btn-ghost" onClick={() => setShowModal(false)} aria-label="Close vent modal">
-                <X size={18} />
-              </button>
-            </div>
 
-            <div className="space-y-3">
-              {VENT_OPTIONS.map((option) => {
-                const Icon = option.icon;
-                return (
-                  <button
-                    key={option.type}
-                    onClick={() => handleClick(option.type)}
-                    disabled={loading}
-                    className="surface-soft surface-glow p-4 w-full rounded-xl border border-[rgba(124,143,255,0.16)] hover:border-[rgba(241,126,126,0.4)] transition disabled:opacity-60 flex items-center gap-3"
-                  >
-                    {loading ? <Spinner size={18} /> : <Icon size={20} className="text-danger" />}
-                    <span className="text-sm text-neutral-200">{option.label}</span>
-                  </button>
-                );
-              })}
+              <div className="space-y-3">
+                {VENT_OPTIONS.map((option) => {
+                  const Icon = option.icon;
+                  const isLoading = pendingType === option.type;
+                  return (
+                    <button
+                      key={option.type}
+                      onClick={() => handleClick(option.type)}
+                      disabled={pendingType !== null}
+                      className="surface-soft surface-glow p-4 w-full rounded-xl border border-[rgba(124,143,255,0.16)] hover:border-[rgba(241,126,126,0.4)] transition disabled:opacity-60 flex items-center gap-3"
+                    >
+                      {isLoading ? <Spinner size={18} /> : <Icon size={20} className="text-danger" />}
+                      <span className="text-sm text-neutral-200">{option.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
 
       {showToast && <Toast message={toastMessage} onClose={() => setShowToast(false)} />}
     </>
