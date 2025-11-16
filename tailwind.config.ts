@@ -6,6 +6,28 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  safelist: [
+    // MD3 color classes
+    'bg-md-primary',
+    'bg-md-primary-container',
+    'bg-md-secondary-container',
+    'bg-md-tertiary-container',
+    'bg-md-error-container',
+    'bg-md-surface-container-high',
+    'bg-md-surface-container-highest',
+    'text-md-on-primary-container',
+    'text-md-on-secondary-container',
+    'text-md-on-tertiary-container',
+    'text-md-on-error-container',
+    'text-md-primary',
+    'text-md-tertiary',
+    'border-md-outline-variant',
+    'border-md-outline',
+    'border-md-primary',
+    'border-md-secondary',
+    'border-md-tertiary',
+    'border-md-error',
+  ],
   theme: {
     extend: {
       colors: {
