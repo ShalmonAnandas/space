@@ -62,8 +62,19 @@ export async function GET(
       }
     }
 
+    // Transform notice to match frontend expectations
+    const transformedNotice = latestNotice ? {
+      id: latestNotice.id,
+      message: latestNotice.content,
+      postedBy: latestNotice.authorId,
+      seenAt: latestNotice.seen ? latestNotice.createdAt : null,
+      editedAt: latestNotice.isEdited ? latestNotice.createdAt : null,
+      canEditUntil: null,
+      createdAt: latestNotice.createdAt,
+    } : null;
+
     return NextResponse.json({
-      notice: latestNotice,
+      notice: transformedNotice,
       canPost,
       reason,
     });
@@ -153,7 +164,18 @@ export async function POST(
       },
     });
 
-    return NextResponse.json({ notice });
+    // Transform notice to match frontend expectations
+    const transformedNotice = {
+      id: notice.id,
+      message: notice.content,
+      postedBy: notice.authorId,
+      seenAt: notice.seen ? notice.createdAt : null,
+      editedAt: notice.isEdited ? notice.createdAt : null,
+      canEditUntil: null,
+      createdAt: notice.createdAt,
+    };
+
+    return NextResponse.json({ notice: transformedNotice });
   } catch (error: any) {
     if (error.message === 'Unauthorized') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -223,7 +245,18 @@ export async function PUT(
       },
     });
 
-    return NextResponse.json({ notice: updatedNotice });
+    // Transform notice to match frontend expectations
+    const transformedNotice = {
+      id: updatedNotice.id,
+      message: updatedNotice.content,
+      postedBy: updatedNotice.authorId,
+      seenAt: updatedNotice.seen ? updatedNotice.createdAt : null,
+      editedAt: updatedNotice.isEdited ? updatedNotice.createdAt : null,
+      canEditUntil: null,
+      createdAt: updatedNotice.createdAt,
+    };
+
+    return NextResponse.json({ notice: transformedNotice });
   } catch (error: any) {
     if (error.message === 'Unauthorized') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

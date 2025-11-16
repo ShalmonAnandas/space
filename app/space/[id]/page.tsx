@@ -9,6 +9,7 @@ import { MoodSelector } from '@/components/MoodSelector';
 import { GossipSection } from '@/components/GossipSection';
 import { FrustrationButtons } from '@/components/FrustrationButtons';
 import { NotificationBadge } from '@/components/NotificationBadge';
+import { NotificationPrompt } from '@/components/NotificationPrompt';
 
 export default function SpacePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -73,6 +74,7 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
   return (
     <div className="min-h-screen p-4 md:p-8">
       <NotificationBadge />
+      <NotificationPrompt />
       
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}

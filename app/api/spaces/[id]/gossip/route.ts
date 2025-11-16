@@ -63,7 +63,16 @@ export async function GET(
       });
     }
 
-    return NextResponse.json({ gossip: unseenGossip });
+    // Transform gossip to match frontend expectations (messages array)
+    const transformedMessages = unseenGossip.map((g: any) => ({
+      id: g.id,
+      message: g.content,
+      postedBy: g.authorId,
+      rereadAt: g.canReRead ? null : g.createdAt,
+      createdAt: g.createdAt,
+    }));
+
+    return NextResponse.json({ messages: transformedMessages });
   } catch (error: any) {
     if (error.message === 'Unauthorized') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -131,7 +140,16 @@ export async function POST(
       { name: user.username }
     );
 
-    return NextResponse.json({ gossip });
+    // Transform gossip to match frontend expectations
+    const transformedGossip = {
+      id: gossip.id,
+      message: gossip.content,
+      postedBy: gossip.authorId,
+      rereadAt: null,
+      createdAt: gossip.createdAt,
+    };
+
+    return NextResponse.json({ gossip: transformedGossip });
   } catch (error: any) {
     if (error.message === 'Unauthorized') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

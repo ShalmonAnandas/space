@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { InstallPrompt } from '@/components/InstallPrompt';
 import { NotificationBadge } from '@/components/NotificationBadge';
+import { NotificationPrompt } from '@/components/NotificationPrompt';
 
 interface Space {
   id: string;
@@ -122,6 +123,7 @@ export default function DashboardPage() {
     <div className="min-h-screen p-4 md:p-8">
       <NotificationBadge />
       <InstallPrompt />
+      <NotificationPrompt />
       
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
