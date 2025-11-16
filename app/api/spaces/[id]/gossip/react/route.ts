@@ -65,7 +65,8 @@ export async function POST(
     // Send notification to the author
     const author = space.userId1 === gossip.authorId ? space.user1 : space.user2;
     
-    await sendNotification(
+    // Fire-and-forget push to avoid blocking the response
+    sendNotification(
       author!.id,
       spaceId,
       'gossip_reaction',

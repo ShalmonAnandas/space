@@ -31,37 +31,46 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Material Design 3 color tokens as Tailwind utilities
+        // Dark palette mapped to MD tokens
         md: {
-          primary: 'rgb(177 209 138)',
-          'on-primary': 'rgb(31 55 1)',
-          'primary-container': 'rgb(53 78 22)',
-          'on-primary-container': 'rgb(205 237 163)',
-          secondary: 'rgb(191 203 173)',
-          'on-secondary': 'rgb(42 51 30)',
-          'secondary-container': 'rgb(64 74 51)',
-          'on-secondary-container': 'rgb(220 231 200)',
-          tertiary: 'rgb(160 208 203)',
-          'on-tertiary': 'rgb(0 55 53)',
-          'tertiary-container': 'rgb(31 78 75)',
-          'on-tertiary-container': 'rgb(188 236 231)',
-          error: 'rgb(255 180 171)',
-          'on-error': 'rgb(105 0 5)',
-          'error-container': 'rgb(147 0 10)',
-          'on-error-container': 'rgb(255 218 214)',
-          background: 'rgb(18 20 14)',
-          'on-background': 'rgb(226 227 216)',
-          surface: 'rgb(18 20 14)',
-          'on-surface': 'rgb(226 227 216)',
-          'surface-variant': 'rgb(68 72 61)',
-          'on-surface-variant': 'rgb(197 200 186)',
-          outline: 'rgb(143 146 133)',
-          'outline-variant': 'rgb(68 72 61)',
-          'surface-container-lowest': 'rgb(12 15 9)',
-          'surface-container-low': 'rgb(26 28 22)',
-          'surface-container': 'rgb(30 32 26)',
-          'surface-container-high': 'rgb(40 43 36)',
-          'surface-container-highest': 'rgb(51 54 46)',
+          // Primary uses muted-teal, readable on honeydew
+          primary: 'rgba(115, 186, 155, 1)',
+          'on-primary': 'rgba(213, 242, 227, 1)',
+          'primary-container': 'rgba(0, 62, 31, 1)',
+          'on-primary-container': 'rgba(213, 242, 227, 1)',
+
+          // Secondary uses brick-ember accent
+          secondary: 'rgba(186, 45, 11, 1)',
+          'on-secondary': 'rgba(213, 242, 227, 1)',
+          'secondary-container': 'rgba(0, 62, 31, 1)',
+          'on-secondary-container': 'rgba(213, 242, 227, 1)',
+
+          // Tertiary reuses teal for success
+          tertiary: 'rgba(115, 186, 155, 1)',
+          'on-tertiary': 'rgba(213, 242, 227, 1)',
+          'tertiary-container': 'rgba(0, 62, 31, 1)',
+          'on-tertiary-container': 'rgba(213, 242, 227, 1)',
+
+          // Error mapped to ember shades
+          error: 'rgba(186, 45, 11, 1)',
+          'on-error': 'rgba(213, 242, 227, 1)',
+          'error-container': 'rgba(186, 45, 11, 0.18)',
+          'on-error-container': 'rgba(213, 242, 227, 1)',
+
+          // Surfaces and background
+          background: 'rgba(1, 17, 10, 1)',
+          'on-background': 'rgba(213, 242, 227, 1)',
+          surface: 'rgba(1, 17, 10, 1)',
+          'on-surface': 'rgba(213, 242, 227, 1)',
+          'surface-variant': 'rgba(0, 62, 31, 1)',
+          'on-surface-variant': 'rgba(213, 242, 227, 0.9)',
+          outline: 'rgba(115, 186, 155, 0.45)',
+          'outline-variant': 'rgba(0, 62, 31, 1)',
+          'surface-container-lowest': 'rgba(1, 17, 10, 1)',
+          'surface-container-low': 'rgba(0, 62, 31, 1)',
+          'surface-container': 'rgba(0, 62, 31, 1)',
+          'surface-container-high': 'rgba(0, 62, 31, 1)',
+          'surface-container-highest': 'rgba(0, 62, 31, 1)',
         },
       },
       borderRadius: {

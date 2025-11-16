@@ -70,7 +70,8 @@ export async function POST(
       });
 
       // Send notification to partner
-      await sendNotification(
+      // Fire-and-forget push to avoid blocking the response
+      sendNotification(
         partner!.id,
         spaceId,
         notificationType,
@@ -95,7 +96,8 @@ export async function POST(
     });
 
     // Send notification to partner
-    await sendNotification(
+    // Fire-and-forget push to avoid blocking the response
+    sendNotification(
       partner!.id,
       spaceId,
       'frustration',

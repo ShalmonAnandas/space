@@ -65,6 +65,7 @@ model PushSubscription {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@unique([userId, subscription])
+  @@index([userId])
 }
 
 model Notice {
@@ -80,6 +81,8 @@ model Notice {
   author    User     @relation(fields: [authorId], references: [id])
   
   @@index([spaceId])
+  @@index([spaceId, createdAt])
+  @@index([spaceId, authorId, seen])
 }
 
 model Gossip {
@@ -95,6 +98,7 @@ model Gossip {
   author    User     @relation(fields: [authorId], references: [id])
   
   @@index([spaceId])
+  @@index([spaceId, authorId, reacted, createdAt])
 }
 
 model Mood {
@@ -106,6 +110,8 @@ model Mood {
   
   space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id])
+
+  @@index([spaceId, userId, createdAt])
 }
 
 model DailyClick {

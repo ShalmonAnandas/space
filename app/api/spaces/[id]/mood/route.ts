@@ -106,7 +106,8 @@ export async function POST(
     // Get partner and send notification
     const partner = space.userId1 === user.userId ? space.user2 : space.user1;
     
-    await sendNotification(
+    // Fire-and-forget push to avoid blocking the response
+    sendNotification(
       partner!.id,
       spaceId,
       'mood',
