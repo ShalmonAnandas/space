@@ -16,35 +16,11 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
   const [loading, setLoading] = useState(true);
   const [space, setSpace] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
-  const [partnerMood, setPartnerMood] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<'notice' | 'gossip' | 'features'>('notice');
+  const [activeTab, setActiveTab] = useState<'notice' | 'gossip'>('notice');
 
   useEffect(() => {
     loadSpaceData();
   }, []);
-
-  useEffect(() => {
-    if (space && user) {
-      loadPartnerMood();
-      // Poll for mood updates every 30 seconds
-      const interval = setInterval(loadPartnerMood, 30000);
-      return () => clearInterval(interval);
-    }
-  }, [space, user]);
-
-  const loadPartnerMood = async () => {
-    try {
-      const response = await fetch(`/api/spaces/${resolvedParams.id}/mood`);
-      const data = await response.json();
-      if (data.partnerMood) {
-        setPartnerMood(data.partnerMood);
-      } else {
-        setPartnerMood(null);
-      }
-    } catch (error) {
-      console.error('Failed to load partner mood:', error);
-    }
-  };
 
   const loadSpaceData = async () => {
     try {
@@ -100,71 +76,61 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
       
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="card-retro">
-          <div className="flex justify-between items-start mb-4">
-            <div className="flex-1">
-              <h1 className="text-3xl font-semibold mb-2">
-                {space.name}
-              </h1>
-              <p className="opacity-70">
-                You & {partner?.username}
-              </p>
-              {partnerMood && (
-                <div className="mt-3 bg-md-surface-container-high p-3 rounded border border-md-outline-variant">
-                  <p className="text-sm opacity-70 mb-1">Partner is feeling:</p>
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg font-semibold">{partnerMood.mood}</span>
-                    <span className="text-xs opacity-70">
-                      • {new Date(partnerMood.createdAt).toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-            <button
-              onClick={() => router.push('/dashboard')}
-              className="btn-secondary"
-            >
-              Back
-            </button>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-semibold mb-1">
+              {space.name}
+            </h1>
+            <p className="opacity-70 text-sm">
+              You & {partner?.username}
+            </p>
+          </div>
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="btn-secondary"
+          >
+            Back
+          </button>
+        </div>
+
+        {/* Separator */}
+        <div className="border-t border-md-outline-variant"></div>
+
+        {/* Tab Navigation with Action Buttons */}
+        <div className="flex flex-wrap gap-3 items-center">
+          <button
+            onClick={() => setActiveTab('notice')}
+            className={`px-4 py-2 rounded font-semibold transition-all ${
+              activeTab === 'notice'
+                ? 'bg-md-primary-container text-md-on-primary-container'
+                : 'bg-md-surface-container-high hover:bg-md-surface-container-highest'
+            }`}
+          >
+            Notice
+          </button>
+          <button
+            onClick={() => setActiveTab('gossip')}
+            className={`px-4 py-2 rounded font-semibold transition-all ${
+              activeTab === 'gossip'
+                ? 'bg-md-primary-container text-md-on-primary-container'
+                : 'bg-md-surface-container-high hover:bg-md-surface-container-highest'
+            }`}
+          >
+            Gossip
+          </button>
+          
+          <div className="flex-1"></div>
+          
+          {/* Action Buttons */}
+          <div className="flex gap-2">
+            <SuttaButton spaceId={resolvedParams.id} partnerName={partner?.username} />
+            <MoodSelector spaceId={resolvedParams.id} partnerName={partner?.username} />
+            <FrustrationButtons spaceId={resolvedParams.id} partnerName={partner?.username} />
           </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="card-retro">
-          <div className="flex gap-2 flex-wrap">
-            <button
-              onClick={() => setActiveTab('notice')}
-              className={`px-4 py-2 rounded font-semibold transition-all ${
-                activeTab === 'notice'
-                  ? 'bg-md-primary-container text-md-on-primary-container shadow-md'
-                  : 'bg-md-surface-container-high hover:bg-md-surface-container-highest'
-              }`}
-            >
-              Notice Board
-            </button>
-            <button
-              onClick={() => setActiveTab('gossip')}
-              className={`px-4 py-2 rounded font-semibold transition-all ${
-                activeTab === 'gossip'
-                  ? 'bg-md-primary-container text-md-on-primary-container shadow-md'
-                  : 'bg-md-surface-container-high hover:bg-md-surface-container-highest'
-              }`}
-            >
-              Gossip
-            </button>
-            <button
-              onClick={() => setActiveTab('features')}
-              className={`px-4 py-2 rounded font-semibold transition-all ${
-                activeTab === 'features'
-                  ? 'bg-md-primary-container text-md-on-primary-container shadow-md'
-                  : 'bg-md-surface-container-high hover:bg-md-surface-container-highest'
-              }`}
-            >
-              Features
-            </button>
-          </div>
-        </div>
+        {/* Separator */}
+        <div className="border-t border-md-outline-variant"></div>
 
         {/* Content Area */}
         {activeTab === 'notice' && (
@@ -173,14 +139,6 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
 
         {activeTab === 'gossip' && (
           <GossipSection spaceId={resolvedParams.id} userId={user.userId} />
-        )}
-
-        {activeTab === 'features' && (
-          <div className="space-y-6">
-            <SuttaButton spaceId={resolvedParams.id} />
-            <MoodSelector spaceId={resolvedParams.id} />
-            <FrustrationButtons spaceId={resolvedParams.id} />
-          </div>
         )}
       </div>
     </div>

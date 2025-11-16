@@ -156,9 +156,12 @@ export default function DashboardPage() {
             </div>
           ) : (
             spaces.map((space: any) => (
-              <div key={space.id} className="card-retro hover:shadow-lg transition-shadow">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
+              <div key={space.id}>
+                {space.user2 ? (
+                  <button
+                    onClick={() => router.push(`/space/${space.id}`)}
+                    className="card-retro hover:shadow-lg transition-shadow w-full text-left"
+                  >
                     <h3 className="text-2xl font-semibold mb-2">
                       {space.name}
                     </h3>
@@ -166,36 +169,34 @@ export default function DashboardPage() {
                       <span className="badge-retro bg-md-primary-container text-md-on-primary-container">
                         {space.user1.username}
                       </span>
-                      {space.user2 ? (
-                        <span className="badge-retro bg-md-tertiary-container text-md-on-tertiary-container">
-                          {space.user2.username}
-                        </span>
-                      ) : (
-                        <span className="badge-retro bg-md-secondary-container text-md-on-secondary-container">
-                          Waiting for partner...
-                        </span>
-                      )}
+                      <span className="badge-retro bg-md-tertiary-container text-md-on-tertiary-container">
+                        {space.user2.username}
+                      </span>
                     </div>
+                  </button>
+                ) : (
+                  <div className="card-retro">
+                    <h3 className="text-2xl font-semibold mb-2">
+                      {space.name}
+                    </h3>
+                    <div className="flex gap-2 flex-wrap mb-3">
+                      <span className="badge-retro bg-md-primary-container text-md-on-primary-container">
+                        {space.user1.username}
+                      </span>
+                      <span className="badge-retro bg-md-secondary-container text-md-on-secondary-container">
+                        Waiting for partner...
+                      </span>
+                    </div>
+                    {space.userId1 === user?.userId && (
+                      <button
+                        onClick={() => handleGenerateInvite(space.id)}
+                        className="btn-secondary"
+                      >
+                        Generate Invite Link
+                      </button>
+                    )}
                   </div>
-                </div>
-
-                <div className="flex gap-2 flex-wrap">
-                  {space.user2 ? (
-                    <button
-                      onClick={() => router.push(`/space/${space.id}`)}
-                      className="btn-primary flex-1"
-                    >
-                      Open Space →
-                    </button>
-                  ) : space.userId1 === user?.userId ? (
-                    <button
-                      onClick={() => handleGenerateInvite(space.id)}
-                      className="btn-secondary flex-1"
-                    >
-                      Generate Invite Link
-                    </button>
-                  ) : null}
-                </div>
+                )}
               </div>
             ))
           )}
