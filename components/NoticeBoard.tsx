@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from 'react';
+import { CalendarClock, PencilLine, CheckCircle2, Eye, AlertCircle, Check } from 'lucide-react';
+import { Spinner } from '@/components/ui/Spinner';
 
 interface Notice {
   id: string;
@@ -162,104 +164,147 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
 
   if (loading) {
     return (
-      <div className="card-retro">
-        <p className="text-retro-medium">Loading notice board...</p>
+      <div className="surface-panel animate-fade-in flex items-center gap-3">
+        <Spinner size={20} />
+        <p className="text-neutral-300">Loading notice board...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {/* Current Notice */}
-      <div className="card-retro">
-        <h2 className="text-2xl font-semibold mb-4">Notice Board</h2>
+    <div className="flex flex-col gap-4">
+      <section className="surface-panel animate-fade-in space-y-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="space-y-2">
+            <span className="badge-neutral">Notice Board</span>
+            <h2 className="text-2xl font-semibold tracking-tight">Pinned updates</h2>
+            <p className="text-sm text-neutral-400 max-w-xl">
+              Keep one high-signal note active. Edit once if needed, and mark theirs as seen when you have read it.
+            </p>
+          </div>
+          <CalendarClock size={24} className="text-accent-soft" />
+        </div>
 
         {notice ? (
           <div className="space-y-4">
-            <div className="bg-md-surface-container-high p-4 rounded border border-md-outline-variant">
-              <p className="text-lg whitespace-pre-wrap mb-2">{notice.message}</p>
-              <div className="flex justify-between items-center text-sm opacity-70">
-                <span>Posted by: {notice.postedBy === userId ? 'You' : 'Partner'}</span>
+            <div className="surface-soft surface-glow p-5 space-y-3">
+              <p className="text-lg leading-relaxed whitespace-pre-wrap text-neutral-100">
+                {notice.message}
+              </p>
+              <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-400">
+                <span className="badge-neutral">
+                  Posted by {notice.postedBy === userId ? 'you' : 'partner'}
+                </span>
                 {notice.editedAt && (
-                  <span className="badge-retro bg-md-secondary-container text-md-on-secondary-container">Edited</span>
+                  <span className="badge-modern badge-neutral flex items-center gap-1">
+                    <PencilLine size={14} />
+                    Edited once
+                  </span>
+                )}
+                {notice.seenAt && notice.postedBy !== userId && (
+                  <span className="badge-positive flex items-center gap-1">
+                    <CheckCircle2 size={14} />
+                    Seen
+                  </span>
                 )}
               </div>
             </div>
 
             {notice.postedBy !== userId && !notice.seenAt && (
               <button onClick={markAsSeen} className="btn-success">
-                Mark as Seen
+                <Check size={16} />
+                <span>Mark as seen</span>
               </button>
-            )}
-
-            {notice.postedBy !== userId && notice.seenAt && (
-              <p className="text-sm opacity-70">Seen</p>
             )}
 
             {canEdit && !editing && (
               <button onClick={startEditing} className="btn-secondary">
-                Edit (one-time only)
+                <PencilLine size={16} />
+                <span>Edit once</span>
               </button>
             )}
 
-            {notice.editedAt && (
-              <p className="text-sm opacity-70">
-                Note: This message has already been edited once.
+            {!canPost && !editing && notice.postedBy === userId && !notice.seenAt && (
+              <p className="text-sm text-neutral-400 flex items-center gap-2">
+                <Eye size={14} /> Waiting for them to mark it as seen before you can post again.
               </p>
+            )}
+
+            {notice.editedAt && (
+              <div className="text-xs text-neutral-500 flex items-center gap-2">
+                <AlertCircle size={14} />
+                This message already consumed its one-time edit.
+              </div>
             )}
           </div>
         ) : (
-          <p className="opacity-70">No notice posted yet.</p>
+          <div className="surface-soft surface-glow p-6 text-sm text-neutral-400">
+            Nothing posted yet. Drop a note below to start the conversation.
+          </div>
         )}
-      </div>
+      </section>
 
-      {/* Post/Edit Form */}
       {(canPost || editing) && (
-        <div className="card-retro">
-          <h3 className="text-xl font-semibold mb-3">
-            {editing ? 'Edit Notice' : 'Post New Notice'}
-          </h3>
+        <section className="surface-panel animate-fade-in space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold">
+                {editing ? 'Edit notice' : 'Post new notice'}
+              </h3>
+              <p className="text-xs text-neutral-500">Share a focused update. You get one notice at a time.</p>
+            </div>
+            {getCooldownMessage() && (
+              <span className="badge-neutral flex items-center gap-1">
+                <CalendarClock size={14} />
+                {getCooldownMessage()}
+              </span>
+            )}
+          </div>
 
           <form onSubmit={editing ? handleEdit : handlePost} className="space-y-3">
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Write your notice..."
-              className="input-retro min-h-[120px] resize-none"
+              className="input-modern min-h-[140px] resize-none"
               maxLength={500}
               disabled={posting}
             />
 
-            <div className="flex justify-between items-center">
-              <span className="text-sm opacity-70">{message.length}/500</span>
+            <div className="flex items-center justify-between text-xs text-neutral-500">
+              <span>{message.length}/500</span>
+              {error && (
+                <span className="text-danger flex items-center gap-1">
+                  <AlertCircle size={12} />
+                  {error}
+                </span>
+              )}
             </div>
 
-            {error && (
-              <div className="bg-md-error-container text-md-on-error-container border border-md-outline-variant rounded p-3">
-                <p className="text-sm">{error}</p>
-              </div>
-            )}
-
-            {getCooldownMessage() && (
-              <div className="bg-md-secondary-container text-md-on-secondary-container border border-md-outline-variant rounded p-3">
-                <p className="text-sm">⏳ {getCooldownMessage()}</p>
-              </div>
-            )}
-
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <button
                 type="submit"
                 disabled={posting || !message.trim()}
-                className="btn-retro disabled:opacity-50"
+                className="btn-primary"
               >
-                {posting ? 'Posting...' : editing ? 'Save Edit' : 'Post Notice'}
+                {posting ? (
+                  <>
+                    <Spinner size={18} />
+                    <span>Saving</span>
+                  </>
+                ) : (
+                  <>
+                    <Check size={16} />
+                    <span>{editing ? 'Save edit' : 'Post notice'}</span>
+                  </>
+                )}
               </button>
 
               {editing && (
                 <button
                   type="button"
                   onClick={cancelEditing}
-                  className="btn-secondary"
+                  className="btn-tertiary"
                   disabled={posting}
                 >
                   Cancel
@@ -267,7 +312,7 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
               )}
             </div>
           </form>
-        </div>
+        </section>
       )}
     </div>
   );

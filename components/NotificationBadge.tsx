@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Bell } from 'lucide-react';
 
 export function NotificationBadge() {
   const [unreadCount, setUnreadCount] = useState(0);
@@ -29,8 +30,11 @@ export function NotificationBadge() {
   if (unreadCount === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 bg-md-error text-md-on-error rounded w-8 h-8 flex items-center justify-center font-semibold text-sm shadow-md z-50">
-      {unreadCount > 9 ? '9+' : unreadCount}
+    <div className="fixed top-4 right-4 z-50">
+      <div className="surface-soft surface-glow border border-[rgba(241,126,126,0.28)] px-3 py-1.5 rounded-full flex items-center gap-1 text-xs text-danger">
+        <Bell size={14} />
+        <span>{unreadCount > 9 ? '9+' : unreadCount}</span>
+      </div>
     </div>
   );
 }

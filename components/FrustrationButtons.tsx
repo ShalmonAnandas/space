@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { Toast } from './Toast';
+import { AlertTriangle, Briefcase, UserX, LogOut, X } from 'lucide-react';
+import { Spinner } from '@/components/ui/Spinner';
 
 interface FrustrationButtonsProps {
   spaceId: string;
@@ -9,9 +11,9 @@ interface FrustrationButtonsProps {
 }
 
 const VENT_OPTIONS = [
-  { type: 'project', label: 'Fuck this project', emoji: '🤬' },
-  { type: 'junior', label: 'I hate my junior', emoji: '😠' },
-  { type: 'resign', label: "I'm gonna resign", emoji: '😤' },
+  { type: 'project', label: 'This project is cursed', icon: Briefcase },
+  { type: 'junior', label: 'My junior is chaos', icon: UserX },
+  { type: 'resign', label: 'I might resign today', icon: LogOut },
 ];
 
 export function FrustrationButtons({ spaceId, partnerName }: FrustrationButtonsProps) {
@@ -50,29 +52,47 @@ export function FrustrationButtons({ spaceId, partnerName }: FrustrationButtonsP
 
   return (
     <>
-      <button
-        onClick={() => setShowModal(true)}
-        className="btn-secondary"
-      >
-        Vent
+      <button onClick={() => setShowModal(true)} className="btn-tertiary">
+        <AlertTriangle size={16} />
+        <span>Vent</span>
       </button>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50" onClick={() => setShowModal(false)}>
-          <div className="bg-md-surface-container rounded p-6 max-w-md w-full border border-md-outline-variant" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-xl font-semibold mb-4">Vent your frustration</h3>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-xs bg-[rgba(5,7,12,0.72)]"
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="surface-panel max-w-md w-full space-y-5 animate-fade-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-semibold">Vent your frustration</h3>
+                <p className="text-sm text-neutral-400">
+                  Trigger a discreet alert so they know you need a minute.
+                </p>
+              </div>
+              <button className="btn-ghost" onClick={() => setShowModal(false)} aria-label="Close vent modal">
+                <X size={18} />
+              </button>
+            </div>
+
             <div className="space-y-3">
-              {VENT_OPTIONS.map((option) => (
-                <button
-                  key={option.type}
-                  onClick={() => handleClick(option.type)}
-                  disabled={loading}
-                  className="btn-retro w-full disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  <span>{option.emoji}</span>
-                  <span>{option.label}</span>
-                </button>
-              ))}
+              {VENT_OPTIONS.map((option) => {
+                const Icon = option.icon;
+                return (
+                  <button
+                    key={option.type}
+                    onClick={() => handleClick(option.type)}
+                    disabled={loading}
+                    className="surface-soft surface-glow p-4 w-full rounded-xl border border-[rgba(124,143,255,0.16)] hover:border-[rgba(241,126,126,0.4)] transition disabled:opacity-60 flex items-center gap-3"
+                  >
+                    {loading ? <Spinner size={18} /> : <Icon size={20} className="text-danger" />}
+                    <span className="text-sm text-neutral-200">{option.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Sparkles, ArrowRight, X } from 'lucide-react';
 
 interface OnboardingModalProps {
   onClose: () => void;
@@ -61,29 +62,45 @@ export default function OnboardingModal({ onClose, onComplete, onShowToast }: On
   const isLast = index === slides.length - 1;
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
-      <div className="card-retro max-w-xl w-full">
-        <div className="mb-4">
-          <h2 className="text-2xl font-semibold">{slides[index].title}</h2>
-          <p className="opacity-80 mt-2">{slides[index].body}</p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-xs bg-[rgba(5,7,12,0.78)]">
+      <div className="surface-panel max-w-xl w-full space-y-6 animate-fade-in">
+        <div className="flex items-start gap-4">
+          <div className="h-12 w-12 rounded-full bg-[rgba(124,143,255,0.18)] flex items-center justify-center">
+            <Sparkles size={24} className="text-accent-strong" />
+          </div>
+          <div className="space-y-3">
+            <h2 className="text-3xl font-semibold tracking-tight">{slides[index].title}</h2>
+            <p className="text-neutral-300 leading-relaxed">{slides[index].body}</p>
+          </div>
+          <button className="btn-ghost" aria-label="Skip onboarding" onClick={handleSkip}>
+            <X size={18} />
+          </button>
         </div>
 
-        <div className="flex items-center justify-between mt-4">
-          <button className="btn-secondary" onClick={handleSkip}>
-            Skip
-          </button>
-
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {slides.map((_, i) => (
               <span
                 key={i}
-                className={`h-2 w-2 rounded-full ${i === index ? 'bg-md-primary' : 'bg-md-outline-variant'}`}
+                className={`h-2.5 w-8 rounded-full transition-colors ${
+                  i === index ? 'bg-accent-soft' : 'bg-[rgba(255,255,255,0.08)]'
+                }`}
               />
             ))}
           </div>
 
           <button className="btn-primary" onClick={handleNext}>
-            {isLast ? 'Finish' : 'Next'}
+            {isLast ? (
+              <>
+                <Sparkles size={18} />
+                <span>Let&apos;s go</span>
+              </>
+            ) : (
+              <>
+                <span>Next</span>
+                <ArrowRight size={18} />
+              </>
+            )}
           </button>
         </div>
       </div>

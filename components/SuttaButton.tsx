@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Toast } from './Toast';
+import { AlarmClock } from 'lucide-react';
+import { Spinner } from '@/components/ui/Spinner';
 
 interface SuttaButtonProps {
   spaceId: string;
@@ -41,12 +43,18 @@ export function SuttaButton({ spaceId, partnerName }: SuttaButtonProps) {
 
   return (
     <>
-      <button
-        onClick={handleClick}
-        disabled={loading}
-        className="btn-secondary disabled:opacity-50"
-      >
-        {loading ? '...' : 'Sutta'}
+      <button onClick={handleClick} disabled={loading} className="btn-tertiary">
+        {loading ? (
+          <>
+            <Spinner size={16} />
+            <span>Notifying</span>
+          </>
+        ) : (
+          <>
+            <AlarmClock size={16} />
+            <span>Sutta</span>
+          </>
+        )}
       </button>
       {showToast && <Toast message={toastMessage} onClose={() => setShowToast(false)} />}
     </>

@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { UserPlus, Lock, ArrowRight } from 'lucide-react';
+import { Spinner } from '@/components/ui/Spinner';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -50,16 +52,17 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="card-retro max-w-md w-full space-y-6">
-        <div className="text-center">
-          <h1 className="text-4xl font-semibold mb-2">Join Space</h1>
-          <p className="opacity-70">Create your private space</p>
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="surface-panel max-w-md w-full space-y-6 animate-fade-in">
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-semibold">Join Space</h1>
+          <p className="text-neutral-400 text-sm">Create your private corner and invite your person.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="username" className="block text-sm font-semibold mb-2">
+          <div className="space-y-1">
+            <label htmlFor="username" className="text-sm font-semibold text-neutral-300 flex items-center gap-2">
+              <UserPlus size={16} />
               Username
             </label>
             <input
@@ -67,15 +70,16 @@ export default function RegisterPage() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="input-retro"
+              className="input-modern"
               placeholder="Choose a username"
               required
               autoComplete="username"
             />
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-semibold mb-2">
+          <div className="space-y-1">
+            <label htmlFor="password" className="text-sm font-semibold text-neutral-300 flex items-center gap-2">
+              <Lock size={16} />
               Password
             </label>
             <input
@@ -83,23 +87,23 @@ export default function RegisterPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="input-retro"
+              className="input-modern"
               placeholder="At least 6 characters"
               required
               autoComplete="new-password"
             />
           </div>
 
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-semibold mb-2">
-              Confirm Password
+          <div className="space-y-1">
+            <label htmlFor="confirmPassword" className="text-sm font-semibold text-neutral-300">
+              Confirm password
             </label>
             <input
               id="confirmPassword"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="input-retro"
+              className="input-modern"
               placeholder="Re-enter your password"
               required
               autoComplete="new-password"
@@ -107,7 +111,7 @@ export default function RegisterPage() {
           </div>
 
           {error && (
-            <div className="bg-md-error-container text-md-on-error-container px-4 py-3 rounded border border-md-outline-variant">
+            <div className="text-sm text-danger bg-[rgba(241,126,126,0.12)] border border-[rgba(241,126,126,0.28)] rounded-xl px-4 py-3">
               {error}
             </div>
           )}
@@ -115,17 +119,27 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-primary w-full disabled:cursor-not-allowed"
           >
-            {loading ? 'Creating account...' : 'Create Account'}
+            {loading ? (
+              <>
+                <Spinner size={18} />
+                <span>Creating account</span>
+              </>
+            ) : (
+              <>
+                <ArrowRight size={16} />
+                <span>Create account</span>
+              </>
+            )}
           </button>
         </form>
 
-        <div className="text-center">
-          <p className="opacity-70">
+        <div className="text-center text-sm text-neutral-500">
+          <p>
             Already have an account?{' '}
-            <Link href="/login" className="text-md-primary font-semibold hover:underline">
-              Login here
+            <Link href="/login" className="text-accent-soft hover:text-accent-strong font-semibold">
+              Sign in here
             </Link>
           </p>
         </div>

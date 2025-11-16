@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Lock, User, ArrowRight } from 'lucide-react';
+import { Spinner } from '@/components/ui/Spinner';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -38,16 +40,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="card-retro max-w-md w-full space-y-6">
-        <div className="text-center">
-          <h1 className="text-4xl font-semibold mb-2">Space</h1>
-          <p className="opacity-70">Your private shared space</p>
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="surface-panel max-w-md w-full space-y-6 animate-fade-in">
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-semibold">Welcome back</h1>
+          <p className="text-neutral-400 text-sm">Sign in to rejoin your shared space.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="username" className="block text-sm font-semibold mb-2">
+          <div className="space-y-1">
+            <label htmlFor="username" className="text-sm font-semibold text-neutral-300 flex items-center gap-2">
+              <User size={16} />
               Username
             </label>
             <input
@@ -55,15 +58,16 @@ export default function LoginPage() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="input-retro"
+              className="input-modern"
               placeholder="Enter your username"
               required
               autoComplete="username"
             />
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-semibold mb-2">
+          <div className="space-y-1">
+            <label htmlFor="password" className="text-sm font-semibold text-neutral-300 flex items-center gap-2">
+              <Lock size={16} />
               Password
             </label>
             <input
@@ -71,7 +75,7 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="input-retro"
+              className="input-modern"
               placeholder="Enter your password"
               required
               autoComplete="current-password"
@@ -79,7 +83,7 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <div className="bg-md-error-container text-md-on-error-container px-4 py-3 rounded border border-md-outline-variant">
+            <div className="text-sm text-danger bg-[rgba(241,126,126,0.12)] border border-[rgba(241,126,126,0.28)] rounded-xl px-4 py-3">
               {error}
             </div>
           )}
@@ -87,17 +91,27 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-primary w-full disabled:cursor-not-allowed"
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? (
+              <>
+                <Spinner size={18} />
+                <span>Signing in</span>
+              </>
+            ) : (
+              <>
+                <ArrowRight size={16} />
+                <span>Login</span>
+              </>
+            )}
           </button>
         </form>
 
-        <div className="text-center">
-          <p className="opacity-70">
-            Do not have an account?{' '}
-            <Link href="/register" className="text-md-primary font-semibold hover:underline">
-              Register here
+        <div className="text-center text-sm text-neutral-500">
+          <p>
+            No account yet?{' '}
+            <Link href="/register" className="text-accent-soft hover:text-accent-strong font-semibold">
+              Create one
             </Link>
           </p>
         </div>

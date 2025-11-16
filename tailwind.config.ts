@@ -7,75 +7,70 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   safelist: [
-    // MD3 color classes
-    'bg-md-primary',
-    'bg-md-primary-container',
-    'bg-md-secondary-container',
-    'bg-md-tertiary-container',
-    'bg-md-error-container',
-    'bg-md-surface-container-high',
-    'bg-md-surface-container-highest',
-    'text-md-on-primary-container',
-    'text-md-on-secondary-container',
-    'text-md-on-tertiary-container',
-    'text-md-on-error-container',
-    'text-md-primary',
-    'text-md-tertiary',
-    'border-md-outline-variant',
-    'border-md-outline',
-    'border-md-primary',
-    'border-md-secondary',
-    'border-md-tertiary',
-    'border-md-error',
+    'shadow-elevated',
+    'bg-surface-strong',
+    'bg-surface-soft',
+    'border-surface-border',
+    'text-accent-soft',
+    'text-accent-strong',
+    'animate-shimmer',
   ],
   theme: {
     extend: {
       colors: {
-        // Dark palette mapped to MD tokens
-        md: {
-          // Retro pastel on dark
-          // Primary: pastel teal
-          primary: '#7CD7C7',
-          'on-primary': '#0B0F14',
-          'primary-container': '#15313A',
-          'on-primary-container': '#B4FFF1',
-
-          // Secondary: pastel pink
-          secondary: '#FFB3C7',
-          'on-secondary': '#0B0F14',
-          'secondary-container': '#3A2437',
-          'on-secondary-container': '#FFD8E8',
-
-          // Tertiary: lavender
-          tertiary: '#C5B5FF',
-          'on-tertiary': '#0B0F14',
-          'tertiary-container': '#2D2745',
-          'on-tertiary-container': '#E9E3FF',
-
-          // Error: soft coral
-          error: '#FF7777',
-          'on-error': '#0B0F14',
-          'error-container': 'rgba(255, 119, 119, 0.18)',
-          'on-error-container': '#FFDADA',
-
-          // Surfaces and background
-          background: '#0B0F14',
-          'on-background': '#E8EEF4',
-          surface: '#121825',
-          'on-surface': '#E8EEF4',
-          'surface-variant': '#1B2334',
-          'on-surface-variant': 'rgba(232, 238, 244, 0.85)',
-          outline: 'rgba(93, 107, 138, 0.5)',
-          'outline-variant': '#1B2334',
-          'surface-container-lowest': '#0B0F14',
-          'surface-container-low': '#151B2A',
-          'surface-container': '#1B2334',
-          'surface-container-high': '#212A3D',
-          'surface-container-highest': '#27324A',
+        background: {
+          base: '#0C0F16',
+          muted: '#10131C',
+        },
+        surface: {
+          soft: 'rgba(34, 39, 51, 0.72)',
+          strong: 'rgba(27, 32, 45, 0.88)',
+          border: 'rgba(118, 132, 168, 0.28)',
+          highlight: 'rgba(59, 68, 94, 0.64)',
+        },
+        accent: {
+          soft: '#7C8FFF',
+          strong: '#9AB0FF',
+          vivid: '#5F72EB',
+        },
+        positive: '#6FC5A6',
+        warning: '#E3B964',
+        danger: '#F17E7E',
+        neutral: {
+          100: '#F5F7FA',
+          200: '#D9DEE8',
+          300: '#B0B7C7',
+          400: '#8A93A8',
+          500: '#6A748B',
+          600: '#4E566B',
+          700: '#3A4153',
+          800: '#282E3C',
+          900: '#1C212D',
         },
       },
+      fontFamily: {
+        sans: ['var(--font-inter)', 'Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+      },
       borderRadius: {
-        DEFAULT: '4px',
+        DEFAULT: '12px',
+        lg: '18px',
+        xl: '24px',
+        '2xl': '32px',
+      },
+      boxShadow: {
+        elevated: '0 18px 40px -25px rgba(14, 18, 28, 0.75)',
+      },
+      backdropBlur: {
+        xs: '6px',
+      },
+      keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+      },
+      animation: {
+        shimmer: 'shimmer 2s linear infinite',
       },
     },
   },

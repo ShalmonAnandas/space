@@ -9,6 +9,8 @@ import { MoodSelector } from '@/components/MoodSelector';
 import { GossipSection } from '@/components/GossipSection';
 import { FrustrationButtons } from '@/components/FrustrationButtons';
 import { NotificationPrompt } from '@/components/NotificationPrompt';
+import { ArrowLeft, NotebookPen, MessageSquare } from 'lucide-react';
+import { Spinner } from '@/components/ui/Spinner';
 
 export default function SpacePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -56,9 +58,10 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="card-retro">
-          <p className="text-retro-dark">Loading space...</p>
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="surface-panel flex items-center gap-3">
+          <Spinner size={20} />
+          <p className="text-neutral-300">Loading space...</p>
         </div>
       </div>
     );
@@ -71,73 +74,55 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
   const partner = space.userId1 === user.userId ? space.user2 : space.user1;
 
   return (
-    <div className="min-h-screen p-4 md:p-8">
+    <div className="min-h-screen">
       <NotificationPrompt />
-      
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-semibold mb-1">
-              {space.name}
-            </h1>
-            <p className="opacity-70 text-sm">
-              You & {partner?.username}
-            </p>
+
+      <div className="page-shell">
+        <header className="surface-panel animate-fade-in flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="space-y-2">
+            <button
+              onClick={() => router.push('/dashboard')}
+              className="btn-ghost"
+              aria-label="Back to dashboard"
+            >
+              <ArrowLeft size={18} />
+            </button>
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight">{space.name}</h1>
+              <p className="text-sm text-neutral-400">You &nbsp;• {partner?.username || 'Waiting to connect'}</p>
+            </div>
           </div>
-          <button
-            onClick={() => router.push('/dashboard')}
-            className="btn-secondary"
-          >
-            Back
-          </button>
-        </div>
-
-        {/* Separator */}
-        <div className="border-t border-md-outline-variant"></div>
-
-        {/* Tab Navigation with Action Buttons */}
-        <div className="flex flex-wrap gap-3 items-center">
-          <button
-            onClick={() => setActiveTab('notice')}
-            className={`px-4 py-2 rounded font-semibold transition-all ${
-              activeTab === 'notice'
-                ? 'bg-md-primary-container text-md-on-primary-container'
-                : 'bg-md-surface-container-high hover:bg-md-surface-container-highest'
-            }`}
-          >
-            Notice
-          </button>
-          <button
-            onClick={() => setActiveTab('gossip')}
-            className={`px-4 py-2 rounded font-semibold transition-all ${
-              activeTab === 'gossip'
-                ? 'bg-md-primary-container text-md-on-primary-container'
-                : 'bg-md-surface-container-high hover:bg-md-surface-container-highest'
-            }`}
-          >
-            Gossip
-          </button>
-          
-          <div className="flex-1"></div>
-          
-          {/* Action Buttons */}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <SuttaButton spaceId={resolvedParams.id} partnerName={partner?.username} />
             <MoodSelector spaceId={resolvedParams.id} partnerName={partner?.username} />
             <FrustrationButtons spaceId={resolvedParams.id} partnerName={partner?.username} />
           </div>
-        </div>
+        </header>
 
-        {/* Separator */}
-        <div className="border-t border-md-outline-variant"></div>
+        <section className="surface-panel animate-fade-in flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => setActiveTab('notice')}
+            className={`btn-tertiary ${
+              activeTab === 'notice' ? 'bg-[rgba(124,143,255,0.22)] text-accent-strong' : ''
+            }`}
+          >
+            <NotebookPen size={16} />
+            <span>Notice board</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('gossip')}
+            className={`btn-tertiary ${
+              activeTab === 'gossip' ? 'bg-[rgba(124,143,255,0.22)] text-accent-strong' : ''
+            }`}
+          >
+            <MessageSquare size={16} />
+            <span>Gossip stream</span>
+          </button>
+        </section>
 
-        {/* Content Area */}
-        {activeTab === 'notice' && (
+        {activeTab === 'notice' ? (
           <NoticeBoard spaceId={resolvedParams.id} userId={user.userId} />
-        )}
-
-        {activeTab === 'gossip' && (
+        ) : (
           <GossipSection spaceId={resolvedParams.id} userId={user.userId} />
         )}
       </div>

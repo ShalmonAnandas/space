@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { MessageCircleMore, Sparkles, ThumbsUp, Clock3 } from 'lucide-react';
+import { Spinner } from '@/components/ui/Spinner';
 
 interface GossipMessage {
   id: string;
@@ -94,63 +96,86 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
 
   if (loading) {
     return (
-      <div className="card-retro">
-        <p className="text-retro-medium">Loading gossip...</p>
+      <div className="surface-panel animate-fade-in flex items-center gap-3">
+        <Spinner size={20} />
+        <p className="text-neutral-300">Loading gossip log...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <div className="card-retro border-l-4 border-md-tertiary">
-        <p className="text-sm">
-          <strong>Gossip Zone:</strong> Share messages and react to their gossip 
-          to acknowledge you&apos;ve seen it. Messages disappear after you react.
-        </p>
-      </div>
+    <div className="flex flex-col gap-4">
+      <section className="surface-panel animate-fade-in space-y-3">
+        <div className="flex items-start gap-3">
+          <div className="h-10 w-10 rounded-full bg-[rgba(124,143,255,0.18)] flex items-center justify-center">
+            <Sparkles size={20} className="text-accent-strong" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-xl font-semibold">Gossip stream</h3>
+            <p className="text-sm text-neutral-400">
+              Share a fleeting thought. When your partner reacts, the entry fades away.
+            </p>
+          </div>
+        </div>
+      </section>
 
-      {/* Post Form */}
-      <div className="card-retro">
-        <h3 className="text-xl font-semibold mb-3">Write Gossip</h3>
+      <section className="surface-panel animate-fade-in space-y-4">
+        <div className="flex items-center justify-between">
+          <h4 className="text-lg font-semibold flex items-center gap-2">
+            <MessageCircleMore size={18} className="text-accent-soft" />
+            Write gossip
+          </h4>
+          <span className="text-xs text-neutral-500">{message.length}/300</span>
+        </div>
 
         <form onSubmit={handlePost} className="space-y-3">
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Share some gossip..."
-            className="input-retro min-h-[100px] resize-none"
+            placeholder="Spill the tea..."
+            className="input-modern min-h-[120px] resize-none"
             maxLength={300}
             disabled={posting}
           />
 
-          <div className="flex justify-between items-center">
-            <span className="text-sm opacity-70">{message.length}/300</span>
-          </div>
-
           {error && (
-            <div className="bg-md-error-container text-md-on-error-container border border-md-outline-variant rounded p-3">
-              <p className="text-sm">{error}</p>
+            <div className="text-sm text-danger bg-[rgba(241,126,126,0.12)] border border-[rgba(241,126,126,0.28)] rounded-xl p-3">
+              {error}
             </div>
           )}
 
           <button
             type="submit"
             disabled={posting || !message.trim()}
-            className="btn-retro disabled:opacity-50"
+            className="btn-primary"
           >
-            {posting ? 'Posting...' : 'Post Gossip'}
+            {posting ? (
+              <>
+                <Spinner size={18} />
+                <span>Posting</span>
+              </>
+            ) : (
+              <>
+                <Sparkles size={16} />
+                <span>Post gossip</span>
+              </>
+            )}
           </button>
         </form>
-      </div>
+      </section>
 
-      {/* Messages List */}
-      <div className="card-retro">
-        <h3 className="text-xl font-semibold mb-3">Recent Gossip</h3>
+      <section className="surface-panel animate-fade-in space-y-3">
+        <div className="flex items-center justify-between">
+          <h4 className="text-lg font-semibold">Recent chatter</h4>
+          <span className="badge-neutral">{messages.length} active</span>
+        </div>
 
         {messages.length === 0 ? (
-          <p className="opacity-70">No gossip yet. Be the first to share!</p>
+          <p className="text-sm text-neutral-400">
+            No gossip yet. Be the first to share something cheeky.
+          </p>
         ) : (
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3">
             {messages.map((msg) => {
               const isOwnMessage = msg.postedBy === userId;
               const canReact = !isOwnMessage && !msg.reacted;
@@ -158,37 +183,42 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
               return (
                 <div
                   key={msg.id}
-                  className={`p-3 rounded border ${
+                  className={`surface-soft p-4 border ${
                     isOwnMessage
-                      ? 'bg-md-primary-container text-md-on-primary-container border-md-outline-variant'
-                      : 'bg-md-surface-container-high border-md-outline-variant'
+                      ? 'border-[rgba(124,143,255,0.22)]'
+                      : 'border-[rgba(118,132,168,0.16)]'
                   }`}
                 >
-                  <p className="whitespace-pre-wrap mb-2">{msg.message}</p>
+                  <p className="whitespace-pre-wrap text-sm text-neutral-100 mb-3">{msg.message}</p>
 
-                  <div className="flex justify-between items-center text-xs opacity-70">
+                  <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500">
                     <span>{isOwnMessage ? 'You' : 'Partner'}</span>
-                    <span>{new Date(msg.createdAt).toLocaleString()}</span>
+                    <span className="flex items-center gap-1">
+                      <Clock3 size={12} />
+                      {new Date(msg.createdAt).toLocaleString()}
+                    </span>
+                    {!isOwnMessage && msg.reacted && (
+                      <span className="badge-positive flex items-center gap-1">
+                        <ThumbsUp size={14} /> Reacted
+                      </span>
+                    )}
                   </div>
 
                   {canReact && (
                     <button
                       onClick={() => handleReact(msg.id)}
-                      className="btn-success text-xs mt-2 py-1 px-3"
+                      className="btn-success mt-3"
                     >
-                      👍 React
+                      <ThumbsUp size={16} />
+                      <span>React</span>
                     </button>
-                  )}
-
-                  {!isOwnMessage && msg.reacted && (
-                    <p className="text-xs text-md-tertiary mt-2">✓ Reacted</p>
                   )}
                 </div>
               );
             })}
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }
