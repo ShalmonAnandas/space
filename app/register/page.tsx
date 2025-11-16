@@ -53,7 +53,7 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card-retro max-w-md w-full space-y-6">
         <div className="text-center">
-          <h1 className="text-4xl font-semibold mb-2">Join Partner App</h1>
+          <h1 className="text-4xl font-semibold mb-2">Join Space</h1>
           <p className="opacity-70">Create your private space</p>
         </div>
 

@@ -10,7 +10,7 @@ export function InstallPrompt() {
   if (isIOSDevice) {
     return (
       <div id="install-prompt" className="fixed bottom-4 left-4 right-4 bg-md-primary-container text-md-on-primary-container p-4 rounded shadow-lg z-50">
-        <h3 className="font-semibold mb-2">Install Partner App</h3>
+        <h3 className="font-semibold mb-2">Install Space</h3>
         <p className="text-sm opacity-90 mb-3">
           Tap the Share button and select &quot;Add to Home Screen&quot;
         </p>
@@ -29,7 +29,7 @@ export function InstallPrompt() {
 
   return (
     <div id="install-prompt" className="fixed bottom-4 left-4 right-4 bg-md-primary-container text-md-on-primary-container p-4 rounded shadow-lg z-50">
-      <h3 className="font-semibold mb-2">Install Partner App</h3>
+      <h3 className="font-semibold mb-2">Install Space</h3>
       <p className="text-sm opacity-90 mb-3">
         Install for the best experience
       </p>

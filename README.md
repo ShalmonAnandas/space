@@ -1,4 +1,4 @@
-# Partner App
+# Space
 
 Private, two-person “shared space” for asynchronous micro‑communication: notices, moods, sutta (ping) button, ephemeral gossip, frustration vents, and dual‑track notifications (web push + in‑app queue fallback) with PWA support.
 

@@ -10,7 +10,7 @@ type Payload = {
 export function getNotificationText(type: NotificationType, payload: Payload) {
   const { name, mood, frustration } = payload;
   let variants: string[] = [];
-  let title = 'Partner App';
+  let title = 'Space';
 
   switch (type) {
     case 'sutta_normal':

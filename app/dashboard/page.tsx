@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { InstallPrompt } from '@/components/InstallPrompt';
 import { NotificationPrompt } from '@/components/NotificationPrompt';
+import OnboardingModal from '@/components/OnboardingModal';
+import { Toast } from '@/components/Toast';
 
 interface Space {
   id: string;
@@ -27,6 +29,9 @@ export default function DashboardPage() {
   const [creating, setCreating] = useState(false);
   const [inviteLink, setInviteLink] = useState('');
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   const loadSpaces = async () => {
     try {
@@ -61,6 +66,22 @@ export default function DashboardPage() {
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  // Show onboarding once spaces/user are loaded and only if not completed before
+  useEffect(() => {
+    // Guard against SSR and only after initial auth attempt
+    if (typeof window === 'undefined') return;
+    // Only show once per device/user context
+    const done = localStorage.getItem('onboardingComplete') === 'true';
+    if (!done) {
+      setShowOnboarding(true);
+    }
+  }, [loading]);
+
+  const showFrickinToast = (msg: string) => {
+    setToastMessage(msg);
+    setShowToast(true);
+  };
 
   const handleCreateSpace = async () => {
     setCreating(true);
@@ -122,6 +143,13 @@ export default function DashboardPage() {
     <div className="min-h-screen p-4 md:p-8">
       <InstallPrompt />
       <NotificationPrompt />
+      {showOnboarding && (
+        <OnboardingModal
+          onClose={() => setShowOnboarding(false)}
+          onComplete={() => {/* reserved for future analytics */}}
+          onShowToast={showFrickinToast}
+        />
+      )}
       
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
@@ -229,6 +257,10 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {showToast && (
+        <Toast message={toastMessage} onClose={() => setShowToast(false)} />
       )}
     </div>
   );

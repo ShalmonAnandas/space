@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Partner App",
+  title: "Space",
   description: "A private shared space for two partners",
   manifest: "/manifest.json",
   themeColor: "#0B0F14",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Partner App",
+    title: "Space",
   },
   viewport: {
     width: "device-width",

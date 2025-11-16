@@ -23,7 +23,7 @@ export default function Home() {
       <div className="card-retro max-w-2xl w-full text-center space-y-8">
         <div>
           <h1 className="text-6xl font-bold mb-4">
-            Partner App
+            Space
           </h1>
           <p className="text-xl opacity-80 mb-8">
             Your private shared space for two

@@ -1,6 +1,6 @@
 # Deployment Guide (Comprehensive)
 
-End‑to‑end steps to deploy Partner App to Vercel with Postgres, cron jobs, push notifications, and PWA assets.
+End‑to‑end steps to deploy Space to Vercel with Postgres, cron jobs, push notifications, and PWA assets.
 
 ## 1. Prerequisites
 - Git & GitHub account
@@ -12,7 +12,7 @@ End‑to‑end steps to deploy Partner App to Vercel with Postgres, cron jobs, p
 ```bash
 git init
 git add .
-git commit -m "Initial commit: Partner App"
+git commit -m "Initial commit: Space"
 git branch -M main
 git remote add origin https://github.com/<user>/space.git
 git push -u origin main

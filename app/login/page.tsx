@@ -41,7 +41,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card-retro max-w-md w-full space-y-6">
         <div className="text-center">
-          <h1 className="text-4xl font-semibold mb-2">Partner App</h1>
+          <h1 className="text-4xl font-semibold mb-2">Space</h1>
           <p className="opacity-70">Your private shared space</p>
         </div>
 
