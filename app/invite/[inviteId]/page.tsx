@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { use } from 'react';
 
@@ -13,11 +13,7 @@ export default function InvitePage({ params }: { params: Promise<{ inviteId: str
   const [joining, setJoining] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  useEffect(() => {
-    checkAuthAndInvite();
-  }, []);
-
-  const checkAuthAndInvite = async () => {
+  const checkAuthAndInvite = useCallback(async () => {
     try {
       // Check auth
       const authResponse = await fetch('/api/auth/me');
@@ -38,7 +34,11 @@ export default function InvitePage({ params }: { params: Promise<{ inviteId: str
     } finally {
       setLoading(false);
     }
-  };
+  }, [resolvedParams.inviteId]);
+
+  useEffect(() => {
+    checkAuthAndInvite();
+  }, [checkAuthAndInvite]);
 
   const handleJoin = async () => {
     if (!isLoggedIn) {
@@ -95,7 +95,7 @@ export default function InvitePage({ params }: { params: Promise<{ inviteId: str
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card-retro max-w-md w-full text-center space-y-6">
         <div>
-          <h1 className="text-4xl font-bold text-retro-dark mb-2">🎉 You're Invited!</h1>
+          <h1 className="text-4xl font-bold text-retro-dark mb-2">🎉 You are Invited!</h1>
           <p className="text-retro-medium">
             Join <span className="font-bold">{spaceInfo?.name}</span>
           </p>
@@ -110,7 +110,7 @@ export default function InvitePage({ params }: { params: Promise<{ inviteId: str
         {!isLoggedIn && (
           <div className="bg-pastel-yellow p-4 rounded-retro">
             <p className="text-retro-dark text-sm">
-              You'll need to login or create an account first
+              You will need to log in or create an account first
             </p>
           </div>
         )}

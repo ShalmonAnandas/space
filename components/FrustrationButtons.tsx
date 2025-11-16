@@ -107,7 +107,7 @@ export function FrustrationButtons({ spaceId }: FrustrationButtonsProps) {
     <div className="card-retro">
       <h3 className="text-xl font-bold text-retro-dark mb-3">😤 Frustration Buttons</h3>
       <p className="text-sm text-retro-medium mb-4">
-        Vent your frustrations! Click once per day to notify your partner. They'll understand. 💙
+        Vent your frustrations! Click once per day to notify your partner. They will understand. 💙
       </p>
 
       <div className="space-y-4">
