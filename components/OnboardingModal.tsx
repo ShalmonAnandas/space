@@ -39,10 +39,7 @@ export default function OnboardingModal({ onClose, onComplete, onShowToast }: On
 
   const handleSkip = () => {
     onShowToast('Just read the frickin instructions');
-    // Allow skipping after showing toast
-    localStorage.setItem('onboardingComplete', 'true');
-    onComplete();
-    onClose();
+    // Do not close or mark complete; keep modal open
   };
 
   const handleNext = () => {

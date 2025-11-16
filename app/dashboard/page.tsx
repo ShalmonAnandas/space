@@ -67,16 +67,15 @@ export default function DashboardPage() {
     checkAuth();
   }, [checkAuth]);
 
-  // Show onboarding once spaces/user are loaded and only if not completed before
+  // Show onboarding only the first time user lands on dashboard (per device)
   useEffect(() => {
-    // Guard against SSR and only after initial auth attempt
     if (typeof window === 'undefined') return;
-    // Only show once per device/user context
-    const done = localStorage.getItem('onboardingComplete') === 'true';
-    if (!done) {
+    const seen = localStorage.getItem('onboardingSeen') === 'true';
+    if (!seen) {
       setShowOnboarding(true);
+      localStorage.setItem('onboardingSeen', 'true');
     }
-  }, [loading]);
+  }, []);
 
   const showFrickinToast = (msg: string) => {
     setToastMessage(msg);
