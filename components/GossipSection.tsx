@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 interface GossipMessage {
   id: string;
@@ -23,13 +23,7 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
   const [error, setError] = useState('');
   const [lastMessage, setLastMessage] = useState<GossipMessage | null>(null);
 
-  useEffect(() => {
-    loadMessages();
-    const interval = setInterval(loadMessages, 5000); // Poll every 5 seconds
-    return () => clearInterval(interval);
-  }, [spaceId]);
-
-  const loadMessages = async () => {
+  const loadMessages = useCallback(async () => {
     try {
       const response = await fetch(`/api/spaces/${spaceId}/gossip`);
       const data = await response.json();
@@ -45,7 +39,13 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [spaceId]);
+
+  useEffect(() => {
+    loadMessages();
+    const interval = setInterval(loadMessages, 5000); // Poll every 5 seconds
+    return () => clearInterval(interval);
+  }, [loadMessages]);
 
   const handlePost = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,7 +105,7 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
       <div className="card-retro border-l-4 border-md-tertiary">
         <p className="text-sm">
           <strong>Gossip Zone:</strong> Share messages with your partner. React to their gossip 
-          to acknowledge you've seen it. Messages disappear after you react.
+          to acknowledge you&apos;ve seen it. Messages disappear after you react.
         </p>
       </div>
 

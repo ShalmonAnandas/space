@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { InstallPrompt } from '@/components/InstallPrompt';
@@ -28,11 +28,19 @@ export default function DashboardPage() {
   const [inviteLink, setInviteLink] = useState('');
   const [showInviteModal, setShowInviteModal] = useState(false);
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
+  const loadSpaces = async () => {
+    try {
+      const response = await fetch('/api/spaces');
+      const data = await response.json();
+      setSpaces(data.spaces || []);
+    } catch (error) {
+      console.error('Failed to load spaces:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const response = await fetch('/api/auth/me');
       const data = await response.json();
@@ -48,19 +56,11 @@ export default function DashboardPage() {
       console.error('Auth check failed:', error);
       router.push('/login');
     }
-  };
+  }, [router, setUser, setSpaces]);
 
-  const loadSpaces = async () => {
-    try {
-      const response = await fetch('/api/spaces');
-      const data = await response.json();
-      setSpaces(data.spaces || []);
-    } catch (error) {
-      console.error('Failed to load spaces:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   const handleCreateSpace = async () => {
     setCreating(true);

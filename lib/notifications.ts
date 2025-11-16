@@ -1,4 +1,5 @@
-type NotificationType = 'sutta_normal' | 'sutta_sos' | 'mood' | 'gossip' | 'frustration';
+type NotificationType = 'sutta_normal' | 'sutta_sos' | 'mood' | 'gossip' | 'frustration' | 
+'gossip_reaction';
 
 type Payload = {
   name: string;

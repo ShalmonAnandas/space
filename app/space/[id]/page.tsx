@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { use } from 'react';
 import { NoticeBoard } from '@/components/NoticeBoard';
@@ -18,11 +18,7 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
   const [user, setUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'notice' | 'gossip'>('notice');
 
-  useEffect(() => {
-    loadSpaceData();
-  }, []);
-
-  const loadSpaceData = async () => {
+  const loadSpaceData = useCallback(async () => {
     try {
       // Check auth
       const authResponse = await fetch('/api/auth/me');
@@ -52,7 +48,11 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
     } finally {
       setLoading(false);
     }
-  };
+  }, [resolvedParams.id, router]);
+
+  useEffect(() => {
+    loadSpaceData();
+  }, [loadSpaceData]);
 
   if (loading) {
     return (
