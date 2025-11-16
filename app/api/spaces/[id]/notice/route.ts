@@ -47,7 +47,7 @@ export async function GET(
       // User's own message
       if (!latestNotice.seen) {
         canPost = false;
-        reason = 'Your message has not been seen by your partner yet';
+        reason = 'Your message has not been seen by your them yet';
       } else {
         // Check 3-hour cooldown
         const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000);

@@ -32,7 +32,7 @@ export default function Home() {
 
         <div className="space-y-4">
           <p>
-            Share moods, vent frustrations, and stay connected with your partner through unique, asynchronous communication channels.
+            Just Vibes Innit
           </p>
         </div>
 
@@ -47,7 +47,7 @@ export default function Home() {
 
         <div className="pt-8 border-t border-md-outline-variant">
           <p className="text-sm opacity-70">
-            Notice Board • Sutta Button • Mood Sharing • Gossip • Frustration Vents
+            Another platform for us to forget to catch up on
           </p>
         </div>
       </div>

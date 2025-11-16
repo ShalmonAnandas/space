@@ -269,14 +269,6 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
           </form>
         </div>
       )}
-
-      {!canPost && !editing && notice && (
-        <div className="card-retro border-l-4 border-md-error">
-          <p>
-            You can post a new notice once your partner has seen your current message.
-          </p>
-        </div>
-      )}
     </div>
   );
 }

@@ -212,7 +212,7 @@ export default function DashboardPage() {
                         {space.user1.username}
                       </span>
                       <span className="badge-retro bg-md-secondary-container text-md-on-secondary-container">
-                        Waiting for partner...
+                        Waiting for them to accept...
                       </span>
                     </div>
                     {space.userId1 === user?.userId && (
@@ -239,7 +239,7 @@ export default function DashboardPage() {
               Invite Link Generated!
             </h2>
             <p className="opacity-80 mb-4">
-              Share this link with your partner to join this space:
+              Share this link with them to join this space:
             </p>
             <div className="bg-md-surface-container-high p-4 rounded mb-4 break-all border border-md-outline-variant">
               <code className="text-sm">{inviteLink}</code>

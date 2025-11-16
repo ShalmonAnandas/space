@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Space",
-  description: "A private shared space for two partners",
+  description: "A shared space for two",
   manifest: "/manifest.json",
   themeColor: "#0B0F14",
   appleWebApp: {

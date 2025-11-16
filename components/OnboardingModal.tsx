@@ -13,19 +13,15 @@ export default function OnboardingModal({ onClose, onComplete, onShowToast }: On
     () => [
       {
         title: 'Welcome to Space',
-        body: 'Create a space and invite your partner. It\'s your private corner to stay in sync.'
+        body: 'Create a space and invite anybody. It\'s your private corner.'
       },
       {
         title: 'Inside a Space',
-        body: 'Share gossip, react to posts, set your mood, leave notices, and do the daily click to show up.'
+        body: 'Share gossip, react to posts, set your mood, leave notices, inform about sutta breaks, and vent frustrations.'
       },
       {
         title: 'Notifications',
-        body: 'Enable notifications to get gentle nudges and updates. You can manage them anytime.'
-      },
-      {
-        title: 'Be Kind',
-        body: 'Keep it light, supportive, and human. Ready to dive in?'
+        body: 'Enable notifications. Just do it. You don\'t get an option'
       }
     ],
     []

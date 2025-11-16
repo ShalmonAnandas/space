@@ -104,7 +104,7 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
     <div className="space-y-4">
       <div className="card-retro border-l-4 border-md-tertiary">
         <p className="text-sm">
-          <strong>Gossip Zone:</strong> Share messages with your partner. React to their gossip 
+          <strong>Gossip Zone:</strong> Share messages and react to their gossip 
           to acknowledge you&apos;ve seen it. Messages disappear after you react.
         </p>
       </div>

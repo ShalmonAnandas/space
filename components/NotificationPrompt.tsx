@@ -43,11 +43,10 @@ export function NotificationPrompt() {
           Notifications are essential for this app! You&apos;ll get instant updates when:
         </p>
         <ul className="list-disc list-inside mb-6 space-y-2 opacity-90">
-          <li>Your partner posts on the Notice Board</li>
-          <li>Your partner sends you gossip</li>
-          <li>Your partner shares their mood</li>
-          <li>Your partner clicks the Sutta button (SOS)</li>
-          <li>Your partner needs support</li>
+          <li>New gossips</li>
+          <li>When they share their mood</li>
+          <li>During their sutta breaks (SOS)</li>
+          <li>When they wanna resign</li>
         </ul>
         <div className="flex gap-3">
           <button

@@ -1,7 +1,7 @@
 {
   "name": "Space",
-  "short_name": "Partner",
-  "description": "A private shared space for two partners",
+  "short_name": "space",
+  "description": "A shared space for two",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0B0F14",
