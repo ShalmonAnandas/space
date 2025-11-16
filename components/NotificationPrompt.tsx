@@ -40,7 +40,7 @@ export function NotificationPrompt() {
           🔔 Enable Notifications
         </h2>
         <p className="text-retro-dark mb-4">
-          Notifications are essential for this app! You'll get instant updates when:
+          Notifications are essential for this app! You&apos;ll get instant updates when:
         </p>
         <ul className="list-disc list-inside text-retro-dark mb-6 space-y-2">
           <li>Your partner posts on the Notice Board</li>
