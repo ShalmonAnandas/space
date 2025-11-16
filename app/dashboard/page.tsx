@@ -25,8 +25,6 @@ export default function DashboardPage() {
   const { user, setUser, setSpaces, spaces } = useAppStore();
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [newSpaceName, setNewSpaceName] = useState('');
   const [inviteLink, setInviteLink] = useState('');
   const [showInviteModal, setShowInviteModal] = useState(false);
 
@@ -64,20 +62,17 @@ export default function DashboardPage() {
     }
   };
 
-  const handleCreateSpace = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCreateSpace = async () => {
     setCreating(true);
 
     try {
       const response = await fetch('/api/spaces', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newSpaceName }),
+        body: JSON.stringify({}),
       });
 
       if (response.ok) {
-        setNewSpaceName('');
-        setShowCreateForm(false);
         loadSpaces();
       }
     } catch (error) {
@@ -143,47 +138,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Create Space Button */}
-        {!showCreateForm && (
-          <button
-            onClick={() => setShowCreateForm(true)}
-            className="btn-primary w-full"
-          >
-            ✨ Create New Space
-          </button>
-        )}
-
-        {/* Create Space Form */}
-        {showCreateForm && (
-          <div className="card-retro">
-            <h2 className="text-xl font-bold text-retro-dark mb-4">Create a New Space</h2>
-            <form onSubmit={handleCreateSpace} className="space-y-4">
-              <input
-                type="text"
-                value={newSpaceName}
-                onChange={(e) => setNewSpaceName(e.target.value)}
-                className="input-retro"
-                placeholder="Give your space a name..."
-                required
-              />
-              <div className="flex gap-2">
-                <button
-                  type="submit"
-                  disabled={creating}
-                  className="btn-primary flex-1"
-                >
-                  {creating ? 'Creating...' : 'Create'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowCreateForm(false)}
-                  className="btn-secondary flex-1"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
+        <button
+          onClick={handleCreateSpace}
+          disabled={creating}
+          className="btn-primary w-full"
+        >
+          {creating ? 'Creating...' : '✨ Create New Space'}
+        </button>
 
         {/* Spaces List */}
         <div className="space-y-4">

@@ -10,7 +10,8 @@ export async function POST(
   try {
     const user = await requireAuth();
     const { id: spaceId } = await params;
-    const { type } = await request.json();
+    const body = await request.json();
+    const type = body.type || body.buttonType;
 
     const validTypes = ['sutta', 'project', 'junior', 'resign'];
     if (!type || !validTypes.includes(type)) {

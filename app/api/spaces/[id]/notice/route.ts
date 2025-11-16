@@ -86,7 +86,8 @@ export async function POST(
   try {
     const user = await requireAuth();
     const { id: spaceId } = await params;
-    const { content } = await request.json();
+    const body = await request.json();
+    const content = body.content || body.message;
 
     if (!content || content.trim().length === 0) {
       return NextResponse.json(
@@ -172,7 +173,8 @@ export async function PUT(
   try {
     const user = await requireAuth();
     const { id: spaceId } = await params;
-    const { content } = await request.json();
+    const body = await request.json();
+    const content = body.content || body.message;
 
     if (!content || content.trim().length === 0) {
       return NextResponse.json(

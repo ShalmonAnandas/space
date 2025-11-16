@@ -48,18 +48,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await requireAuth();
-    const { name } = await request.json();
-
-    if (!name) {
-      return NextResponse.json(
-        { error: 'Space name is required' },
-        { status: 400 }
-      );
-    }
 
     const space = await prisma.space.create({
       data: {
-        name,
+        name: 'Pending',
         userId1: user.userId,
       },
       include: {

@@ -35,11 +35,20 @@ export async function POST(
       );
     }
 
-    // Update space with userId2 and delete invite
+    // Get user1 to create the space name
+    const user1 = await prisma.user.findUnique({
+      where: { id: invite.space.userId1 },
+      select: { username: true },
+    });
+
+    // Update space with userId2, set name to "<user1> & <user2>", and delete invite
     const [updatedSpace] = await prisma.$transaction([
       prisma.space.update({
         where: { id: invite.spaceId },
-        data: { userId2: user.userId },
+        data: { 
+          userId2: user.userId,
+          name: `${user1?.username} & ${user.username}`,
+        },
         include: {
           user1: {
             select: { id: true, username: true },
