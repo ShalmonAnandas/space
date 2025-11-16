@@ -88,7 +88,7 @@ model Gossip {
   authorId  String   @db.Uuid
   content   String
   seen      Boolean  @default(false)
-  canReRead Boolean  @default(true)
+  reacted   Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamptz
   
   space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)

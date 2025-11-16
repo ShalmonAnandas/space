@@ -29,12 +29,12 @@ export async function GET(
     // Get partner's ID
     const partnerId = space.userId1 === user.userId ? space.userId2 : space.userId1;
 
-    // Get unseen gossip from partner
-    const unseenGossip = await prisma.gossip.findMany({
+    // Get unreacted gossip from partner
+    const unreactedGossip = await prisma.gossip.findMany({
       where: {
         spaceId,
         authorId: partnerId!,
-        seen: false,
+        reacted: false,
       },
       include: {
         author: {
@@ -49,12 +49,12 @@ export async function GET(
       },
     });
 
-    // Mark all as seen
-    if (unseenGossip.length > 0) {
+    // Mark all as seen (but not reacted)
+    if (unreactedGossip.length > 0) {
       await prisma.gossip.updateMany({
         where: {
           id: {
-            in: unseenGossip.map((g: any) => g.id),
+            in: unreactedGossip.map((g: any) => g.id),
           },
         },
         data: {
@@ -64,11 +64,11 @@ export async function GET(
     }
 
     // Transform gossip to match frontend expectations (messages array)
-    const transformedMessages = unseenGossip.map((g: any) => ({
+    const transformedMessages = unreactedGossip.map((g: any) => ({
       id: g.id,
       message: g.content,
       postedBy: g.authorId,
-      rereadAt: g.canReRead ? null : g.createdAt,
+      reacted: g.reacted,
       createdAt: g.createdAt,
     }));
 
@@ -145,7 +145,7 @@ export async function POST(
       id: gossip.id,
       message: gossip.content,
       postedBy: gossip.authorId,
-      rereadAt: null,
+      reacted: false,
       createdAt: gossip.createdAt,
     };
 

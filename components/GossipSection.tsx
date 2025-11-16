@@ -6,7 +6,7 @@ interface GossipMessage {
   id: string;
   message: string;
   postedBy: string;
-  rereadAt: string | null;
+  reacted: boolean;
   createdAt: string;
 }
 
@@ -76,16 +76,19 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
     }
   };
 
-  const handleReread = async (messageId: string) => {
+  const handleReact = async (messageId: string) => {
     try {
-      await fetch(`/api/spaces/${spaceId}/gossip/reread`, {
+      const response = await fetch(`/api/spaces/${spaceId}/gossip/react`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messageId }),
       });
-      await loadMessages();
+      
+      if (response.ok) {
+        await loadMessages();
+      }
     } catch (err) {
-      console.error('Failed to mark as reread:', err);
+      console.error('Failed to react to gossip:', err);
     }
   };
 
@@ -101,9 +104,8 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
     <div className="space-y-4">
       <div className="card-retro border-l-4 border-md-tertiary">
         <p className="text-sm">
-          <strong>Gossip Zone:</strong> Messages disappear after being read. This is NOT
-          real-time chat - refresh to see new messages. For urgent matters, use the Notice Board or
-          Sutta button!
+          <strong>Gossip Zone:</strong> Share messages with your partner. React to their gossip 
+          to acknowledge you've seen it. Messages disappear after you react.
         </p>
       </div>
 
@@ -151,7 +153,7 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
           <div className="space-y-3">
             {messages.map((msg) => {
               const isOwnMessage = msg.postedBy === userId;
-              const canReread = !isOwnMessage && !msg.rereadAt;
+              const canReact = !isOwnMessage && !msg.reacted;
 
               return (
                 <div
@@ -169,17 +171,17 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
                     <span>{new Date(msg.createdAt).toLocaleString()}</span>
                   </div>
 
-                  {canReread && (
+                  {canReact && (
                     <button
-                      onClick={() => handleReread(msg.id)}
+                      onClick={() => handleReact(msg.id)}
                       className="btn-success text-xs mt-2 py-1 px-3"
                     >
-                      Mark as Re-read
+                      👍 React
                     </button>
                   )}
 
-                  {msg.rereadAt && !isOwnMessage && (
-                    <p className="text-xs text-md-tertiary mt-2">Re-read</p>
+                  {!isOwnMessage && msg.reacted && (
+                    <p className="text-xs text-md-tertiary mt-2">✓ Reacted</p>
                   )}
                 </div>
               );
@@ -187,24 +189,6 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
           </div>
         )}
       </div>
-
-      {/* Last Message Re-read */}
-      {lastMessage && lastMessage.postedBy !== userId && !lastMessage.rereadAt && (
-        <div className="card-retro border-l-4 border-md-secondary">
-          <p className="text-sm mb-3">
-            You can re-read the last message to let your partner know you saw it:
-          </p>
-          <div className="bg-md-surface-container-high p-3 rounded border border-md-outline-variant mb-3">
-            <p className="text-sm">{lastMessage.message}</p>
-          </div>
-          <button
-            onClick={() => handleReread(lastMessage.id)}
-            className="btn-success"
-          >
-            👀 Mark as Re-read
-          </button>
-        </div>
-      )}
     </div>
   );
 }
