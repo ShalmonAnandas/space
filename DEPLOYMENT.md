@@ -77,7 +77,7 @@ $env:DATABASE_URL=(Get-Content .env.production | Select-String "^DATABASE_URL" |
 npx prisma migrate deploy
 ```
 
-Option B (CI): Add migration step after build in your deployment pipeline.
+**Note**: The build script automatically runs `prisma generate` to ensure the Prisma client is up to date. The `postinstall` script also runs `prisma generate` after dependencies are installed.
 
 ## 9. PWA Icons
 Replace placeholders:
