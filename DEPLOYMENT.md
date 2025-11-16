@@ -54,15 +54,30 @@ Optional: `POSTGRES_URL`, `POSTGRES_PRISMA_URL`, `POSTGRES_URL_NON_POOLING`.
 Push `main` → Vercel builds & deploys. Confirm live URL.
 
 ## 8. Run Migrations
-Option A (local):
-```bash
-npm i -g vercel
-vercel login
-vercel link
+**First time setup** (create initial migration):
+```powershell
+# Pull production environment variables
 vercel env pull .env.production
+
+# Set DATABASE_URL from .env.production and create migration
+$env:DATABASE_URL=(Get-Content .env.production | Select-String "^DATABASE_URL" | ForEach-Object { $_ -replace '^DATABASE_URL=', '' } | ForEach-Object { $_.Trim('"') })
+npx prisma migrate dev --name init
+```
+
+**Subsequent migrations** (after schema changes):
+```powershell
+# Create and apply new migration
+$env:DATABASE_URL=(Get-Content .env.production | Select-String "^DATABASE_URL" | ForEach-Object { $_ -replace '^DATABASE_URL=', '' } | ForEach-Object { $_.Trim('"') })
+npx prisma migrate dev --name describe_your_change
+```
+
+**Deploy only** (if migrations already exist):
+```powershell
+$env:DATABASE_URL=(Get-Content .env.production | Select-String "^DATABASE_URL" | ForEach-Object { $_ -replace '^DATABASE_URL=', '' } | ForEach-Object { $_.Trim('"') })
 npx prisma migrate deploy
 ```
-Option B (CI): Add step after build.
+
+Option B (CI): Add migration step after build in your deployment pipeline.
 
 ## 9. PWA Icons
 Replace placeholders:
