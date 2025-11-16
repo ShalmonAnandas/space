@@ -20,6 +20,10 @@ export async function POST(request: NextRequest) {
     if (error.message === 'Unauthorized') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    // Handle unique constraint (already subscribed) as success to make this idempotent
+    if (error.code === 'P2002') {
+      return NextResponse.json({ success: true });
+    }
     console.error('Error subscribing to push:', error);
     return NextResponse.json(
       { error: 'Failed to subscribe' },

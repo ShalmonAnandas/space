@@ -20,6 +20,21 @@ export function usePushNotifications() {
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
       setIsSubscribed(!!subscription);
+
+      // If the browser already has a subscription but the server may not (e.g., DB reset),
+      // send it to the server to ensure it's stored. Treat server-side duplicates as success.
+      if (subscription && Notification.permission === 'granted') {
+        try {
+          await fetch('/api/push/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(subscription),
+          });
+        } catch (e) {
+          // Non-fatal: If this fails, user flows can still trigger subscribe() later.
+          console.error('Subscription sync failed:', e);
+        }
+      }
     } catch (error) {
       console.error('Error checking subscription:', error);
     }
