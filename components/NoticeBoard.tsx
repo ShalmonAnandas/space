@@ -166,7 +166,7 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
     return (
       <div className="surface-panel animate-fade-in flex items-center gap-3">
         <Spinner size={20} />
-        <p className="text-neutral-300">Loading today's vibes...</p>
+        <p className="text-neutral-300">Loading today&apos;s vibes...</p>
       </div>
     );
   }
@@ -176,7 +176,7 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
       <section className="surface-panel animate-fade-in space-y-4">
         <div className="flex items-start justify-between gap-3">
           <div className="space-y-2">
-            <span className="badge-neutral">Today's Vibes</span>
+            <span className="badge-neutral">Today&apos;s Vibes</span>
             <h2 className="text-2xl font-semibold tracking-tight">Pinned updates</h2>
             <p className="text-sm text-neutral-400 max-w-xl">
               Keep one high-signal note active. Edit once if needed, and mark theirs as seen when you have read it.
