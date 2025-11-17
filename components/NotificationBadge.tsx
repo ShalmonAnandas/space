@@ -17,7 +17,7 @@ export function NotificationBadge() {
 
   const fetchUnreadCount = async () => {
     try {
-      const response = await fetch('/api/notifications');
+      const response = await fetch('/api/notifications?unreadOnly=true');
       if (response.ok) {
         const data = await response.json();
         setUnreadCount(data.notifications?.length || 0);

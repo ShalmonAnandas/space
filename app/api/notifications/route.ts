@@ -6,10 +6,14 @@ export async function GET(request: NextRequest) {
   try {
     const user = await requireAuth();
 
+    // Get query parameter to filter by read status
+    const { searchParams } = new URL(request.url);
+    const unreadOnly = searchParams.get('unreadOnly') === 'true';
+
     const notifications = await prisma.notificationQueue.findMany({
       where: {
         userId: user.userId,
-        read: false,
+        ...(unreadOnly ? { read: false } : {}),
       },
       include: {
         space: {
@@ -21,6 +25,7 @@ export async function GET(request: NextRequest) {
       orderBy: {
         createdAt: 'desc',
       },
+      take: 100, // Limit to last 100 notifications
     });
 
     return NextResponse.json({ notifications });

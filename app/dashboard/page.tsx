@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { InstallPrompt } from '@/components/InstallPrompt';
 import { NotificationPrompt } from '@/components/NotificationPrompt';
+import { NotificationButton } from '@/components/NotificationButton';
 import OnboardingModal from '@/components/OnboardingModal';
 import { Toast } from '@/components/Toast';
 import {
@@ -186,6 +187,7 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="flex items-center gap-3">
+              <NotificationButton />
               <button
                 onClick={handleCreateSpace}
                 disabled={creating}

@@ -9,6 +9,7 @@ import { MoodSelector } from '@/components/MoodSelector';
 import { GossipSection } from '@/components/GossipSection';
 import { FrustrationButtons } from '@/components/FrustrationButtons';
 import { NotificationPrompt } from '@/components/NotificationPrompt';
+import { NotificationButton } from '@/components/NotificationButton';
 import { ArrowLeft, NotebookPen, MessageSquare } from 'lucide-react';
 import { Spinner } from '@/components/ui/Spinner';
 
@@ -88,13 +89,16 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
       <div className="page-shell">
         <header className="surface-panel animate-fade-in flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="space-y-2">
-            <button
-              onClick={() => router.push('/dashboard')}
-              className="btn-ghost"
-              aria-label="Back to dashboard"
-            >
-              <ArrowLeft size={18} />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => router.push('/dashboard')}
+                className="btn-ghost"
+                aria-label="Back to dashboard"
+              >
+                <ArrowLeft size={18} />
+              </button>
+              <NotificationButton />
+            </div>
             <div>
               <h1 className="text-3xl font-semibold tracking-tight">{space.name}</h1>
               <p className="text-sm text-neutral-400">
