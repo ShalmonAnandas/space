@@ -9,12 +9,13 @@ webpush.setVapidDetails(
   process.env.VAPID_PRIVATE_KEY as string
 );
 
-type NotificationType = 'sutta_normal' | 'sutta_sos' | 'mood' | 'gossip' | 'frustration' | 'gossip_reaction';
+type NotificationType = 'sutta_normal' | 'sutta_sos' | 'mood' | 'gossip' | 'frustration' | 'gossip_reaction' | 'notice_seen' | 'vent';
 
 interface NotificationPayload {
   name: string;
   mood?: string;
   frustration?: 'project' | 'junior' | 'resign';
+  ventText?: string;
 }
 
 export async function sendNotification(

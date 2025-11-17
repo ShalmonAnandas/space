@@ -94,6 +94,7 @@ export async function POST(
     const { id: spaceId } = await params;
     const body = await request.json();
     const content = body.content || body.message;
+    const isVent = body.isVent === true;
 
     if (!content || content.trim().length === 0) {
       return NextResponse.json(
@@ -134,12 +135,23 @@ export async function POST(
     const partner = space.userId1 === user.userId ? space.user2 : space.user1;
     
     // Fire-and-forget push to avoid blocking the response
-    sendNotification(
-      partner!.id,
-      spaceId,
-      'gossip',
-      { name: user.username }
-    );
+    if (isVent) {
+      // For vent messages, send the actual text in the notification
+      sendNotification(
+        partner!.id,
+        spaceId,
+        'vent',
+        { name: user.username, ventText: content.trim() }
+      );
+    } else {
+      // For regular gossip, send generic notification
+      sendNotification(
+        partner!.id,
+        spaceId,
+        'gossip',
+        { name: user.username }
+      );
+    }
 
     // Transform gossip to match frontend expectations
     const transformedGossip = {

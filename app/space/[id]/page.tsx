@@ -19,6 +19,7 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
   const [space, setSpace] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'notice' | 'gossip'>('notice');
+  const [partnerMood, setPartnerMood] = useState<string | null>(null);
 
   const loadSpaceData = useCallback(async () => {
     try {
@@ -44,6 +45,13 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
       }
 
       setSpace(foundSpace);
+
+      // Load partner's mood
+      const moodResponse = await fetch(`/api/spaces/${resolvedParams.id}/mood`);
+      const moodData = await moodResponse.json();
+      if (moodData.partnerMood) {
+        setPartnerMood(moodData.partnerMood.mood);
+      }
     } catch (error) {
       console.error('Failed to load space:', error);
       router.push('/dashboard');
@@ -89,7 +97,14 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
             </button>
             <div>
               <h1 className="text-3xl font-semibold tracking-tight">{space.name}</h1>
-              <p className="text-sm text-neutral-400">You &nbsp;• {partner?.username || 'Waiting to connect'}</p>
+              <p className="text-sm text-neutral-400">
+                You &nbsp;• {partner?.username || 'Waiting to connect'}
+                {partnerMood && (
+                  <span className="ml-2 badge-neutral">
+                    Mood: {partnerMood}
+                  </span>
+                )}
+              </p>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">

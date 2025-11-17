@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { sendNotification } from '@/lib/push';
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    // Verify cron secret
+    // Verify API secret for security
     const authHeader = request.headers.get('authorization');
-    const cronSecret = process.env.CRON_SECRET;
+    const apiSecret = process.env.API_SECRET;
 
-    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+    if (!apiSecret || authHeader !== `Bearer ${apiSecret}`) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -60,9 +60,9 @@ export async function GET(request: NextRequest) {
       total: users.length,
     });
   } catch (error) {
-    console.error('Cron job error:', error);
+    console.error('Mood prompt API error:', error);
     return NextResponse.json(
-      { error: 'Cron job failed' },
+      { error: 'Mood prompt failed' },
       { status: 500 }
     );
   }

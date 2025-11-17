@@ -1,13 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useState } from 'react';
-import { CalendarClock, PencilLine, CheckCircle2, Eye, AlertCircle, Check } from 'lucide-react';
+import { CalendarClock, PencilLine, CheckCircle2, Eye, AlertCircle, Check, History } from 'lucide-react';
 import { Spinner } from '@/components/ui/Spinner';
 
 interface Notice {
   id: string;
   message: string;
   postedBy: string;
+  postedByUsername?: string;
   seenAt: string | null;
   editedAt: string | null;
   canEditUntil: string | null;
@@ -21,7 +22,10 @@ interface NoticeBoardProps {
 
 export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
   const [notice, setNotice] = useState<Notice | null>(null);
+  const [historicalNotices, setHistoricalNotices] = useState<Notice[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadingHistory, setLoadingHistory] = useState(false);
   const [posting, setPosting] = useState(false);
   const [editing, setEditing] = useState(false);
   const [message, setMessage] = useState('');
@@ -50,6 +54,23 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
       setLoading(false);
     }
   }, [spaceId]);
+
+  const loadHistoricalNotices = async () => {
+    setLoadingHistory(true);
+    try {
+      const response = await fetch(`/api/spaces/${spaceId}/notice?history=true`);
+      const data = await response.json();
+
+      if (data.notices) {
+        setHistoricalNotices(data.notices);
+        setShowHistory(true);
+      }
+    } catch (err) {
+      console.error('Failed to load historical notices:', err);
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
 
   useEffect(() => {
     loadNotice();
@@ -236,6 +257,24 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
                 This message already consumed its one-time edit.
               </div>
             )}
+
+            <button
+              onClick={loadHistoricalNotices}
+              disabled={loadingHistory}
+              className="btn-tertiary"
+            >
+              {loadingHistory ? (
+                <>
+                  <Spinner size={16} />
+                  <span>Loading...</span>
+                </>
+              ) : (
+                <>
+                  <History size={16} />
+                  <span>View previous 5 notices</span>
+                </>
+              )}
+            </button>
           </div>
         ) : (
           <div className="surface-soft surface-glow p-6 text-sm text-neutral-400">
@@ -243,6 +282,52 @@ export function NoticeBoard({ spaceId, userId }: NoticeBoardProps) {
           </div>
         )}
       </section>
+
+      {showHistory && historicalNotices.length > 0 && (
+        <section className="surface-panel animate-fade-in space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <History size={18} className="text-accent-soft" />
+              Previous notices
+            </h3>
+            <button
+              onClick={() => setShowHistory(false)}
+              className="text-xs text-neutral-400 hover:text-neutral-200"
+            >
+              Hide
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            {historicalNotices.map((histNotice) => (
+              <div
+                key={histNotice.id}
+                className="surface-soft p-4 border border-[rgba(118,132,168,0.12)] space-y-2"
+              >
+                <p className="text-sm leading-relaxed whitespace-pre-wrap text-neutral-200">
+                  {histNotice.message}
+                </p>
+                <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-500">
+                  <span>
+                    {histNotice.postedBy === userId ? 'You' : histNotice.postedByUsername || 'Partner'}
+                  </span>
+                  <span>•</span>
+                  <span>{new Date(histNotice.createdAt).toLocaleString()}</span>
+                  {histNotice.editedAt && (
+                    <>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <PencilLine size={12} />
+                        Edited
+                      </span>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {(canPost || editing) && (
         <section className="surface-panel animate-fade-in space-y-4">

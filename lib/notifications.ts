@@ -1,14 +1,15 @@
 type NotificationType = 'sutta_normal' | 'sutta_sos' | 'mood' | 'gossip' | 'frustration' | 
-'gossip_reaction';
+'gossip_reaction' | 'notice_seen' | 'vent';
 
 type Payload = {
   name: string;
   mood?: string;
   frustration?: 'project' | 'junior' | 'resign';
+  ventText?: string;
 };
 
 export function getNotificationText(type: NotificationType, payload: Payload) {
-  const { name, mood, frustration } = payload;
+  const { name, mood, frustration, ventText } = payload;
   let variants: string[] = [];
   let title = 'Space';
 
@@ -49,6 +50,17 @@ export function getNotificationText(type: NotificationType, payload: Payload) {
         resign: `${name} is thinking about resigning...`,
       };
       variants = [textMap[frustration!]];
+      break;
+    case 'notice_seen':
+      variants = [
+        `${name} read your notice!`,
+        `${name} has seen your update.`,
+        `Your notice was read by ${name}.`,
+      ];
+      break;
+    case 'vent':
+      title = 'Partner Vent';
+      variants = [ventText || `${name} needs to vent!`];
       break;
   }
 

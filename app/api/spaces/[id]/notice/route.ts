@@ -9,6 +9,8 @@ export async function GET(
   try {
     const user = await requireAuth();
     const { id: spaceId } = await params;
+    const { searchParams } = new URL(request.url);
+    const history = searchParams.get('history') === 'true';
 
     // Verify user is part of this space
     const space = await prisma.space.findFirst({
@@ -23,6 +25,36 @@ export async function GET(
 
     if (!space) {
       return NextResponse.json({ error: 'Space not found' }, { status: 404 });
+    }
+
+    if (history) {
+      // Fetch last 5 notices (excluding the most recent one)
+      const historicalNotices = await prisma.notice.findMany({
+        where: { spaceId },
+        orderBy: { createdAt: 'desc' },
+        skip: 1, // Skip the most recent one
+        take: 5,
+        include: {
+          author: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
+        },
+      });
+
+      const transformedNotices = historicalNotices.map((notice) => ({
+        id: notice.id,
+        message: notice.content,
+        postedBy: notice.authorId,
+        postedByUsername: notice.author.username,
+        seenAt: notice.seen ? notice.createdAt : null,
+        editedAt: notice.isEdited ? notice.createdAt : null,
+        createdAt: notice.createdAt,
+      }));
+
+      return NextResponse.json({ notices: transformedNotices });
     }
 
     // Get the most recent notice

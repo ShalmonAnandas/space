@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAuth } from '@/lib/auth';
+import { sendNotification } from '@/lib/push';
 
 export async function POST(
   request: NextRequest,
@@ -19,6 +20,10 @@ export async function POST(
           { userId2: user.userId },
         ],
       },
+      include: {
+        user1: { select: { id: true, username: true } },
+        user2: { select: { id: true, username: true } },
+      },
     });
 
     if (!space) {
@@ -27,6 +32,7 @@ export async function POST(
 
     // Get partner's ID
     const partnerId = space.userId1 === user.userId ? space.userId2 : space.userId1;
+    const partner = space.userId1 === user.userId ? space.user2 : space.user1;
 
     // Mark partner's latest unseen notice as seen
     await prisma.notice.updateMany({
@@ -39,6 +45,14 @@ export async function POST(
         seen: true,
       },
     });
+
+    // Send notification to the partner (author of the notice)
+    sendNotification(
+      partnerId!,
+      spaceId,
+      'notice_seen',
+      { name: user.username }
+    );
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

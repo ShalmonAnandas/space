@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { MessageCircleMore, Sparkles, ThumbsUp, Clock3 } from 'lucide-react';
+import { MessageCircleMore, Sparkles, ThumbsUp, Clock3, Wind } from 'lucide-react';
 import { Spinner } from '@/components/ui/Spinner';
 
 interface GossipMessage {
@@ -21,8 +21,11 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
   const [messages, setMessages] = useState<GossipMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [posting, setPosting] = useState(false);
+  const [ventPosting, setVentPosting] = useState(false);
   const [message, setMessage] = useState('');
+  const [ventMessage, setVentMessage] = useState('');
   const [error, setError] = useState('');
+  const [ventError, setVentError] = useState('');
   const [lastMessage, setLastMessage] = useState<GossipMessage | null>(null);
 
   const loadMessages = useCallback(async () => {
@@ -75,6 +78,35 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
       setError(err.message);
     } finally {
       setPosting(false);
+    }
+  };
+
+  const handleVentPost = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!ventMessage.trim()) return;
+
+    setVentPosting(true);
+    setVentError('');
+
+    try {
+      const response = await fetch(`/api/spaces/${spaceId}/gossip`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: ventMessage.trim(), isVent: true }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to post vent');
+      }
+
+      setVentMessage('');
+      await loadMessages();
+    } catch (err: any) {
+      setVentError(err.message);
+    } finally {
+      setVentPosting(false);
     }
   };
 
@@ -158,6 +190,51 @@ export function GossipSection({ spaceId, userId }: GossipSectionProps) {
               <>
                 <Sparkles size={16} />
                 <span>Post gossip</span>
+              </>
+            )}
+          </button>
+        </form>
+      </section>
+
+      <section className="surface-panel animate-fade-in space-y-4">
+        <div className="flex items-center justify-between">
+          <h4 className="text-lg font-semibold flex items-center gap-2">
+            <Wind size={18} className="text-purple-400" />
+            Need to vent?
+          </h4>
+          <span className="text-xs text-neutral-500">{ventMessage.length}/500</span>
+        </div>
+
+        <form onSubmit={handleVentPost} className="space-y-3">
+          <textarea
+            value={ventMessage}
+            onChange={(e) => setVentMessage(e.target.value)}
+            placeholder="Let it all out... Your partner will be notified with your message."
+            className="input-modern min-h-[140px] resize-none"
+            maxLength={500}
+            disabled={ventPosting}
+          />
+
+          {ventError && (
+            <div className="text-sm text-danger bg-[rgba(241,126,126,0.12)] border border-[rgba(241,126,126,0.28)] rounded-xl p-3">
+              {ventError}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={ventPosting || !ventMessage.trim()}
+            className="btn-secondary"
+          >
+            {ventPosting ? (
+              <>
+                <Spinner size={18} />
+                <span>Sending</span>
+              </>
+            ) : (
+              <>
+                <Wind size={16} />
+                <span>Send vent & notify partner</span>
               </>
             )}
           </button>
