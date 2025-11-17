@@ -87,11 +87,17 @@ self.addEventListener('push', (event) => {
       body,
       icon: '/icon-192.png',
       badge: '/icon-192.png',
-      vibrate: [200, 100, 200],
+      vibrate: [200, 100, 200, 100, 200], // Longer vibration pattern
       tag: 'partner-notification',
       requireInteraction: true, // Keep notification visible until user interacts
       renotify: true, // Vibrate/alert even if replacing existing notification
-      data: { spaceId }, // Store spaceId for click handler
+      silent: false, // Explicitly not silent
+      timestamp: Date.now(), // Add timestamp
+      data: { 
+        spaceId,
+        url: spaceId ? `/space/${spaceId}` : '/',
+        timestamp: Date.now()
+      },
     };
 
     console.log('[SW] Showing notification:', title, options);
