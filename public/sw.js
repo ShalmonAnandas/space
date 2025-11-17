@@ -83,7 +83,8 @@ self.addEventListener('push', (event) => {
       badge: '/icon-192.png',
       vibrate: [200, 100, 200],
       tag: 'partner-notification',
-      requireInteraction: false,
+      requireInteraction: true, // Keep notification visible until user interacts
+      renotify: true, // Vibrate/alert even if replacing existing notification
       data: { spaceId }, // Store spaceId for click handler
     };
 

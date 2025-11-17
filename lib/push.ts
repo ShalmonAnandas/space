@@ -36,7 +36,12 @@ export async function sendNotification(
       try {
         await webpush.sendNotification(
           sub.subscription as any,
-          JSON.stringify({ title, body, spaceId })
+          JSON.stringify({ title, body, spaceId }),
+          {
+            TTL: 3600, // Keep trying to deliver for 1 hour
+            urgency: 'high', // High priority delivery
+            topic: 'partner-notification', // Replace older notifications of same topic
+          }
         );
       } catch (error: any) {
         // If subscription is expired/invalid, delete it
