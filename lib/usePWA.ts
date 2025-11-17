@@ -22,48 +22,23 @@ export function usePWA() {
 
     // Check for service worker upgrade
     const checkSWUpgrade = async () => {
-      const storedVersion = localStorage.getItem('sw_version');
-      const upgradeCompleted = localStorage.getItem('sw_upgrade_completed') === 'true';
-      const hadNotifications = localStorage.getItem('had_notifications') === 'true';
-      
-      // Check if user has an active push subscription
-      let hasActiveSubscription = false;
-      if ('serviceWorker' in navigator && 'PushManager' in window) {
-        try {
-          const registration = await navigator.serviceWorker.getRegistration();
-          if (registration) {
-            const subscription = await registration.pushManager.getSubscription();
-            hasActiveSubscription = !!subscription;
-          }
-        } catch (e) {
-          console.error('Error checking subscription:', e);
-        }
-      }
+      const upgradeCompleted = localStorage.getItem('sw_v2_upgrade_completed') === 'true';
       
       // Check if user has granted notification permission (indicates they had notifications)
       const hasNotificationPermission = 'Notification' in window && Notification.permission === 'granted';
       
-      const shouldUpgrade = hasActiveSubscription || hadNotifications || hasNotificationPermission;
-      const versionMismatch = !storedVersion || storedVersion !== SW_VERSION;
-      
       console.log('SW Upgrade Check:', {
-        storedVersion,
         currentVersion: SW_VERSION,
-        hasActiveSubscription,
-        hadNotifications,
         hasNotificationPermission,
-        shouldUpgrade,
         upgradeCompleted,
-        versionMismatch,
-        needsUpgrade: !upgradeCompleted && shouldUpgrade && versionMismatch
+        needsUpgrade: !upgradeCompleted && hasNotificationPermission
       });
       
       // Trigger upgrade if:
-      // 1. Version mismatch (no stored version OR different version)
-      // 2. User has active subscription OR had notifications OR has permission granted
-      // 3. Upgrade hasn't been completed yet
-      if (!upgradeCompleted && shouldUpgrade && versionMismatch) {
-        console.log('🔄 Triggering service worker upgrade');
+      // 1. User has notification permission granted (they had notifications before)
+      // 2. v2 Upgrade hasn't been completed yet
+      if (!upgradeCompleted && hasNotificationPermission) {
+        console.log('🔄 Triggering service worker v2 upgrade');
         
         // Need to upgrade - unregister old service worker
         if ('serviceWorker' in navigator) {
@@ -75,13 +50,7 @@ export function usePWA() {
           console.log('✅ Old service worker unregistered for upgrade');
         }
         setNeedsUpgrade(true);
-        // Don't store version yet - wait for upgrade completion
         return;
-      }
-      
-      // Store current version only if not upgrading
-      if (storedVersion !== SW_VERSION) {
-        localStorage.setItem('sw_version', SW_VERSION);
       }
     };
 

@@ -19,12 +19,12 @@ export function NotificationPrompt() {
       isSupported,
       isSubscribed,
       permission,
-      upgradeCompleted: localStorage.getItem('sw_upgrade_completed')
+      upgradeCompleted: localStorage.getItem('sw_v2_upgrade_completed')
     });
     
     // Check if this is an upgrade scenario
     if (needsUpgrade && isSupported) {
-      const upgradeCompleted = localStorage.getItem('sw_upgrade_completed');
+      const upgradeCompleted = localStorage.getItem('sw_v2_upgrade_completed');
       if (!upgradeCompleted) {
         console.log('Showing upgrade prompt');
         setShowPrompt(true);
@@ -47,8 +47,7 @@ export function NotificationPrompt() {
     
     if (success) {
       if (isUpgrade) {
-        localStorage.setItem('sw_upgrade_completed', 'true');
-        localStorage.setItem('sw_version', 'v2');
+        localStorage.setItem('sw_v2_upgrade_completed', 'true');
       }
       setShowPrompt(false);
     }
@@ -56,7 +55,7 @@ export function NotificationPrompt() {
 
   const handleDismiss = () => {
     if (isUpgrade) {
-      localStorage.setItem('sw_upgrade_completed', 'true');
+      localStorage.setItem('sw_v2_upgrade_completed', 'true');
     }
     setShowPrompt(false);
   };
