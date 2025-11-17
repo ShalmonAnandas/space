@@ -42,21 +42,21 @@ export function NotificationSetupGuide() {
               <strong>Settings → Apps → Chrome → Notifications</strong>
               <br />
               <span className="text-neutral-400 ml-5">
-                Find "www.shalmon.space" and set to <strong>"Alerting"</strong> with <strong>"High"</strong> importance
+                Find &ldquo;www.shalmon.space&rdquo; and set to <strong>&ldquo;Alerting&rdquo;</strong> with <strong>&ldquo;High&rdquo;</strong> importance
               </span>
             </li>
             <li>
               <strong>Settings → Battery → Background usage limits</strong>
               <br />
               <span className="text-neutral-400 ml-5">
-                Add Chrome to <strong>"Never sleeping apps"</strong>
+                Add Chrome to <strong>&ldquo;Never sleeping apps&rdquo;</strong>
               </span>
             </li>
             <li>
               <strong>Settings → Notifications → Advanced</strong>
               <br />
               <span className="text-neutral-400 ml-5">
-                Enable <strong>"Show as pop-up"</strong> for Chrome notifications
+                Enable <strong>&ldquo;Show as pop-up&rdquo;</strong> for Chrome notifications
               </span>
             </li>
           </ol>
