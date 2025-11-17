@@ -76,6 +76,7 @@ export function usePushNotifications() {
 
       if (response.ok) {
         setIsSubscribed(true);
+        localStorage.setItem('had_notifications', 'true');
         return true;
       }
 
@@ -104,6 +105,7 @@ export function usePushNotifications() {
         });
 
         setIsSubscribed(false);
+        localStorage.setItem('had_notifications', 'false');
         return true;
       }
 

@@ -1,4 +1,5 @@
 /* eslint-disable no-restricted-globals */
+const SW_VERSION = 'v2';
 const CACHE_NAME = 'space-v1';
 const urlsToCache = [
   '/',
@@ -7,6 +8,9 @@ const urlsToCache = [
 
 // Install event
 self.addEventListener('install', (event) => {
+  // Take control immediately
+  self.skipWaiting();
+  
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(urlsToCache);
@@ -34,41 +38,55 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Activate event - clean old caches
+// Activate event - clean old caches and take control
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    Promise.all([
+      // Clean old caches
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME) {
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      }),
+      // Take control of all clients immediately
+      self.clients.claim()
+    ])
   );
 });
 
 // Push notification event
 self.addEventListener('push', (event) => {
-  if (!event.data) return;
+  console.log('Push event received:', event);
+  
+  if (!event.data) {
+    console.log('Push event has no data');
+    return;
+  }
 
-  const data = event.data.json();
-  const { title, body, spaceId } = data;
+  try {
+    const data = event.data.json();
+    const { title, body, spaceId } = data;
 
-  const options = {
-    body,
-    icon: '/icon-192.png',
-    badge: '/icon-192.png',
-    vibrate: [200, 100, 200],
-    tag: 'partner-notification',
-    requireInteraction: false,
-    data: { spaceId }, // Store spaceId for click handler
-  };
+    const options = {
+      body,
+      icon: '/icon-192.png',
+      badge: '/icon-192.png',
+      vibrate: [200, 100, 200],
+      tag: 'partner-notification',
+      requireInteraction: false,
+      data: { spaceId }, // Store spaceId for click handler
+    };
 
-  event.waitUntil(
-    self.registration.showNotification(title, options)
-  );
+    event.waitUntil(
+      self.registration.showNotification(title, options)
+    );
+  } catch (error) {
+    console.error('Error handling push event:', error);
+  }
 });
 
 // Notification click event

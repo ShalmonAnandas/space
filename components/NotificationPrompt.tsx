@@ -2,20 +2,30 @@
 
 import { useEffect, useState } from 'react';
 import { usePushNotifications } from '@/lib/usePushNotifications';
-import { BellPlus, BellOff } from 'lucide-react';
+import { usePWA } from '@/lib/usePWA';
+import { BellPlus, BellOff, RefreshCw } from 'lucide-react';
 import { Spinner } from '@/components/ui/Spinner';
 
 export function NotificationPrompt() {
   const { isSupported, isSubscribed, permission, subscribe } = usePushNotifications();
+  const { needsUpgrade } = usePWA();
   const [showPrompt, setShowPrompt] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpgrade, setIsUpgrade] = useState(false);
 
   useEffect(() => {
-    // Show prompt only if notifications are supported, not subscribed, and permission is not granted or denied
-    if (isSupported && !isSubscribed && permission === 'default') {
+    // Check if this is an upgrade scenario
+    if (needsUpgrade && isSupported) {
+      const upgradeShown = sessionStorage.getItem('upgrade_prompt_shown');
+      if (!upgradeShown) {
+        setShowPrompt(true);
+        setIsUpgrade(true);
+      }
+    } else if (isSupported && !isSubscribed && permission === 'default') {
+      // Show prompt only if notifications are supported, not subscribed, and permission is default
       setShowPrompt(true);
     }
-  }, [isSupported, isSubscribed, permission]);
+  }, [isSupported, isSubscribed, permission, needsUpgrade]);
 
   const handleEnable = async () => {
     setIsLoading(true);
@@ -23,11 +33,17 @@ export function NotificationPrompt() {
     setIsLoading(false);
     
     if (success) {
+      if (isUpgrade) {
+        sessionStorage.setItem('upgrade_prompt_shown', 'true');
+      }
       setShowPrompt(false);
     }
   };
 
   const handleDismiss = () => {
+    if (isUpgrade) {
+      sessionStorage.setItem('upgrade_prompt_shown', 'true');
+    }
     setShowPrompt(false);
   };
 
@@ -42,14 +58,21 @@ export function NotificationPrompt() {
           <div className="h-11 w-11 rounded-full bg-[rgba(124,143,255,0.18)] flex items-center justify-center">
             {permission === 'denied' ? (
               <BellOff size={22} className="text-danger" />
+            ) : isUpgrade ? (
+              <RefreshCw size={22} className="text-accent-strong" />
             ) : (
               <BellPlus size={22} className="text-accent-strong" />
             )}
           </div>
           <div className="space-y-2">
-            <h2 className="text-2xl font-semibold">Enable notifications</h2>
+            <h2 className="text-2xl font-semibold">
+              {isUpgrade ? 'Notifications upgraded!' : 'Enable notifications'}
+            </h2>
             <p className="text-sm text-neutral-400">
-              Get a soft ping whenever your space comes alive&mdash;new gossip, mood shifts, or a quick sutta break alert.
+              {isUpgrade 
+                ? 'We've improved notifications to work even when the app is closed. Please allow notifications again to continue receiving updates.'
+                : 'Get a soft ping whenever your space comes alive—new gossip, mood shifts, or a quick sutta break alert.'
+              }
             </p>
           </div>
         </div>
@@ -70,12 +93,12 @@ export function NotificationPrompt() {
             {isLoading ? (
               <>
                 <Spinner size={18} />
-                <span>Enabling</span>
+                <span>{isUpgrade ? 'Upgrading' : 'Enabling'}</span>
               </>
             ) : (
               <>
-                <BellPlus size={18} />
-                <span>Enable notifications</span>
+                {isUpgrade ? <RefreshCw size={18} /> : <BellPlus size={18} />}
+                <span>{isUpgrade ? 'Allow notifications' : 'Enable notifications'}</span>
               </>
             )}
           </button>
