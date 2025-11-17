@@ -70,7 +70,7 @@ export function NotificationPrompt() {
             </h2>
             <p className="text-sm text-neutral-400">
               {isUpgrade 
-                ? 'We've improved notifications to work even when the app is closed. Please allow notifications again to continue receiving updates.'
+                ? "We've improved notifications to work even when the app is closed. Please allow notifications again to continue receiving updates."
                 : 'Get a soft ping whenever your space comes alive—new gossip, mood shifts, or a quick sutta break alert.'
               }
             </p>
