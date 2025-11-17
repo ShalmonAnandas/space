@@ -26,8 +26,19 @@ export async function sendNotification(
 ) {
   const { title, body } = getNotificationText(type, payload);
 
-  // Send push notification only (no in-app queue)
   try {
+    // Store notification in database for history
+    await prisma.notificationQueue.create({
+      data: {
+        userId,
+        spaceId,
+        type,
+        content: payload as any,
+        read: false,
+      },
+    });
+
+    // Send push notification
     const subscriptions = await prisma.pushSubscription.findMany({
       where: { userId },
     });
@@ -56,6 +67,6 @@ export async function sendNotification(
 
     await Promise.allSettled(pushPromises);
   } catch (error) {
-    console.error('Error sending push notifications:', error);
+    console.error('Error sending notifications:', error);
   }
 }
