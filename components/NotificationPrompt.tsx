@@ -14,10 +14,19 @@ export function NotificationPrompt() {
   const [isUpgrade, setIsUpgrade] = useState(false);
 
   useEffect(() => {
+    console.log('NotificationPrompt useEffect:', {
+      needsUpgrade,
+      isSupported,
+      isSubscribed,
+      permission,
+      upgradeCompleted: localStorage.getItem('sw_upgrade_completed')
+    });
+    
     // Check if this is an upgrade scenario
     if (needsUpgrade && isSupported) {
       const upgradeCompleted = localStorage.getItem('sw_upgrade_completed');
       if (!upgradeCompleted) {
+        console.log('Showing upgrade prompt');
         setShowPrompt(true);
         setIsUpgrade(true);
         return;
@@ -26,6 +35,7 @@ export function NotificationPrompt() {
     
     // Regular notification prompt for new users
     if (isSupported && !isSubscribed && permission === 'default') {
+      console.log('Showing regular notification prompt');
       setShowPrompt(true);
     }
   }, [isSupported, isSubscribed, permission, needsUpgrade]);
@@ -38,6 +48,7 @@ export function NotificationPrompt() {
     if (success) {
       if (isUpgrade) {
         localStorage.setItem('sw_upgrade_completed', 'true');
+        localStorage.setItem('sw_version', 'v2');
       }
       setShowPrompt(false);
     }
