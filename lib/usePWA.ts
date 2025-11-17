@@ -24,8 +24,13 @@ export function usePWA() {
     const checkSWUpgrade = async () => {
       const storedVersion = localStorage.getItem('sw_version');
       const hadNotifications = localStorage.getItem('had_notifications') === 'true';
+      const upgradeCompleted = localStorage.getItem('sw_upgrade_completed') === 'true';
       
-      if (storedVersion && storedVersion !== SW_VERSION && hadNotifications) {
+      // Trigger upgrade if:
+      // 1. No stored version (existing user before versioning) OR version changed
+      // 2. User had notifications enabled
+      // 3. Upgrade hasn't been completed yet
+      if (!upgradeCompleted && hadNotifications && (!storedVersion || storedVersion !== SW_VERSION)) {
         // Need to upgrade - unregister old service worker
         if ('serviceWorker' in navigator) {
           const registrations = await navigator.serviceWorker.getRegistrations();
