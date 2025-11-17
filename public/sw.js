@@ -8,6 +8,7 @@ const urlsToCache = [
 
 // Install event
 self.addEventListener('install', (event) => {
+  console.log('[SW] Install event - version:', SW_VERSION);
   // Take control immediately
   self.skipWaiting();
   
@@ -46,6 +47,7 @@ self.addEventListener('fetch', (event) => {
 
 // Activate event - clean old caches and take control
 self.addEventListener('activate', (event) => {
+  console.log('[SW] Activate event - version:', SW_VERSION);
   event.waitUntil(
     Promise.all([
       // Clean old caches
@@ -53,6 +55,7 @@ self.addEventListener('activate', (event) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
             if (cacheName !== CACHE_NAME) {
+              console.log('[SW] Deleting old cache:', cacheName);
               return caches.delete(cacheName);
             }
           })
@@ -62,19 +65,22 @@ self.addEventListener('activate', (event) => {
       self.clients.claim()
     ])
   );
+  console.log('[SW] Service worker activated and ready');
 });
 
 // Push notification event
 self.addEventListener('push', (event) => {
-  console.log('Push event received:', event);
+  console.log('[SW] Push event received at:', new Date().toISOString());
+  console.log('[SW] Push event data:', event.data);
   
   if (!event.data) {
-    console.log('Push event has no data');
+    console.log('[SW] Push event has no data');
     return;
   }
 
   try {
     const data = event.data.json();
+    console.log('[SW] Parsed push data:', data);
     const { title, body, spaceId } = data;
 
     const options = {
@@ -88,11 +94,17 @@ self.addEventListener('push', (event) => {
       data: { spaceId }, // Store spaceId for click handler
     };
 
+    console.log('[SW] Showing notification:', title, options);
+    
     event.waitUntil(
-      self.registration.showNotification(title, options)
+      self.registration.showNotification(title, options).then(() => {
+        console.log('[SW] Notification shown successfully');
+      }).catch(err => {
+        console.error('[SW] Failed to show notification:', err);
+      })
     );
   } catch (error) {
-    console.error('Error handling push event:', error);
+    console.error('[SW] Error handling push event:', error);
   }
 });
 
