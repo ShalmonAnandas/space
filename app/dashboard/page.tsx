@@ -52,7 +52,16 @@ export default function DashboardPage() {
     try {
       const response = await fetch('/api/spaces');
       const data = await response.json();
-      setSpaces(data.spaces || []);
+      
+      if (!response.ok) {
+        // Show the actual error message from the API
+        console.error('Failed to load spaces:', data.error);
+        setToastMessage(data.error || 'Unable to load spaces right now.');
+        setShowToast(true);
+        setSpaces([]);
+      } else {
+        setSpaces(data.spaces || []);
+      }
     } catch (error) {
       console.error('Failed to load spaces:', error);
       setToastMessage('Unable to load spaces right now.');

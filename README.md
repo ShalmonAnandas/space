@@ -154,11 +154,13 @@ curl -H "Authorization: Bearer $CRON_TEST_SECRET" \
 ```
 
 ## 13. Troubleshooting
+- **Spaces disappear / DB errors**: Run `npx prisma migrate deploy` to apply pending migrations. See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed steps.
 - Auth fails: Check `SESSION_SECRET`, browser cookies.
-- DB errors: Verify `DATABASE_URL`; run migrations.
 - Push fails: Confirm HTTPS (prod), service worker registration, permission granted.
 - Cron silent: Correct secrets + `vercel.json` present.
 - Notice repost blocked: Partner has not marked seen or cooldown still active.
+
+For comprehensive troubleshooting, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
 ## 14. Maintenance
 - Weekly: Review logs & queue size.

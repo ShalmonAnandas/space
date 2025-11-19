@@ -54,6 +54,9 @@ Optional: `POSTGRES_URL`, `POSTGRES_PRISMA_URL`, `POSTGRES_URL_NON_POOLING`.
 Push `main` → Vercel builds & deploys. Confirm live URL.
 
 ## 8. Run Migrations
+
+⚠️ **CRITICAL**: Always run migrations after deploying schema changes, or spaces and other data may become inaccessible. See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) if you encounter issues.
+
 **First time setup** (create initial migration):
 ```powershell
 # Pull production environment variables
@@ -123,7 +126,7 @@ Dashboard → Settings → Cron Jobs: verify entries. After scheduled time, mood
 ## 15. Common Issues
 | Issue | Cause | Fix |
 |-------|-------|-----|
-| 500 DB | Migrations missing | Run `npx prisma migrate deploy` |
+| 500 DB / Spaces missing | Migrations not applied | Run `npx prisma migrate deploy` (see [TROUBLESHOOTING.md](TROUBLESHOOTING.md)) |
 | Auth lost | Bad/missing secret | Regenerate `SESSION_SECRET` |
 | No push | Permission/SW issue | Re-subscribe; check `/sw.js` |
 | Cron inert | Wrong Bearer token | Verify header & secret |

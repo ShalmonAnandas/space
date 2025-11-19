@@ -38,6 +38,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     console.error('Error fetching spaces:', error);
+    
+    // Provide more specific error message for database schema issues
+    if (error.code === 'P2010' || error.message?.includes('column') || error.message?.includes('does not exist')) {
+      return NextResponse.json(
+        { error: 'Database schema mismatch. Please run database migrations: npx prisma migrate deploy' },
+        { status: 500 }
+      );
+    }
+    
     return NextResponse.json(
       { error: 'Failed to fetch spaces' },
       { status: 500 }
