@@ -48,11 +48,14 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await requireAuth();
+    const body = await request.json();
+    const { suttaEnabled = true } = body;
 
     const space = await prisma.space.create({
       data: {
         name: 'Pending',
         userId1: user.userId,
+        suttaEnabled: suttaEnabled,
       },
       include: {
         user1: {

@@ -45,6 +45,8 @@ export default function DashboardPage() {
   const [toastMessage, setToastMessage] = useState('');
   const [copying, setCopying] = useState(false);
   const [inviteLoading, setInviteLoading] = useState<string | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [suttaEnabled, setSuttaEnabled] = useState(true);
 
   const loadSpaces = useCallback(async () => {
     try {
@@ -104,12 +106,14 @@ export default function DashboardPage() {
       const response = await fetch('/api/spaces', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ suttaEnabled }),
       });
 
       if (response.ok) {
         loadSpaces();
         showToastMessage('Fresh space ready to share.');
+        setShowCreateModal(false);
+        setSuttaEnabled(true); // Reset to default
       }
     } catch (error) {
       console.error('Failed to create space:', error);
@@ -189,7 +193,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-3">
               <NotificationButton />
               <button
-                onClick={handleCreateSpace}
+                onClick={() => setShowCreateModal(true)}
                 disabled={creating}
                 className="btn-primary"
               >
@@ -254,7 +258,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex justify-center">
                   <button
-                    onClick={handleCreateSpace}
+                    onClick={() => setShowCreateModal(true)}
                     disabled={creating}
                     className="btn-secondary"
                   >
@@ -330,6 +334,72 @@ export default function DashboardPage() {
           </div>
         </section>
       </div>
+
+      {/* Create Space Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-xs bg-[rgba(5,7,12,0.72)]">
+          <div className="surface-panel max-w-lg w-full animate-fade-in">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-[rgba(124,143,255,0.18)] flex items-center justify-center">
+                  <PlusCircle size={20} className="text-accent-strong" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold">Create a new space</h2>
+                  <p className="text-sm text-neutral-400">Configure your space options</p>
+                </div>
+              </div>
+
+              <div className="soft-divider" />
+
+              <div className="space-y-3">
+                <label className="flex items-center justify-between p-4 surface-soft border border-surface-border cursor-pointer hover:bg-[rgba(124,143,255,0.08)] transition-colors">
+                  <div className="space-y-1">
+                    <div className="font-medium">Enable Sutta Button</div>
+                    <div className="text-sm text-neutral-400">Allow quick notifications via Sutta button</div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={suttaEnabled}
+                    onChange={(e) => setSuttaEnabled(e.target.checked)}
+                    className="h-5 w-5 rounded border-surface-border bg-surface-soft text-accent-soft focus:ring-2 focus:ring-accent-soft focus:ring-offset-2 focus:ring-offset-surface-panel"
+                  />
+                </label>
+              </div>
+
+              <div className="flex gap-2 flex-col sm:flex-row">
+                <button 
+                  onClick={handleCreateSpace} 
+                  className="btn-primary flex-1" 
+                  disabled={creating}
+                >
+                  {creating ? (
+                    <>
+                      <Spinner size={18} />
+                      <span>Creating</span>
+                    </>
+                  ) : (
+                    <>
+                      <PlusCircle size={18} />
+                      <span>Create Space</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowCreateModal(false);
+                    setSuttaEnabled(true); // Reset to default
+                  }}
+                  className="btn-tertiary flex-1"
+                  disabled={creating}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Invite Modal */}
       {showInviteModal && (
