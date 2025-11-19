@@ -40,48 +40,22 @@ export async function POST(
       return NextResponse.json({ error: 'Space not found or incomplete' }, { status: 404 });
     }
 
-    // Check clicks in last 24 hours
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const recentClicks = await prisma.dailyClick.findMany({
-      where: {
-        spaceId,
-        userId: user.userId,
-        type,
-        createdAt: {
-          gte: twentyFourHoursAgo,
-        },
-      },
-    });
-
     // Get partner info
     const partner = space.userId1 === user.userId ? space.user2 : space.user1;
 
-    // Handle Sutta button (SOS logic)
+    // Handle Sutta button (always send normal notification)
     if (type === 'sutta') {
-      const notificationType = recentClicks.length === 0 ? 'sutta_normal' : 'sutta_sos';
-      
-      // Log the click
-      await prisma.dailyClick.create({
-        data: {
-          spaceId,
-          userId: user.userId,
-          type,
-        },
-      });
-
       // Send notification to partner
       // Fire-and-forget push to avoid blocking the response
       sendNotification(
         partner!.id,
         spaceId,
-        notificationType,
+        'sutta_normal',
         { name: user.username }
       );
 
       return NextResponse.json({ 
-        success: true, 
-        isSOS: recentClicks.length > 0,
-        clickCount: recentClicks.length + 1,
+        success: true
       });
     }
 
