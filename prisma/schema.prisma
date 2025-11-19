@@ -28,11 +28,12 @@ model User {
 }
 
 model Space {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name      String
-  userId1   String   @db.Uuid
-  userId2   String?  @db.Uuid
-  createdAt DateTime @default(now()) @db.Timestamptz
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String
+  userId1      String   @db.Uuid
+  userId2      String?  @db.Uuid
+  suttaEnabled Boolean  @default(true)
+  createdAt    DateTime @default(now()) @db.Timestamptz
   
   user1     User     @relation("SpaceUser1", fields: [userId1], references: [id], onDelete: Cascade)
   user2     User?    @relation("SpaceUser2", fields: [userId2], references: [id], onDelete: SetNull)

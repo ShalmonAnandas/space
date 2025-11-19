@@ -112,7 +112,9 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <SuttaButton spaceId={resolvedParams.id} partnerName={partner?.username} />
+            {space.suttaEnabled && (
+              <SuttaButton spaceId={resolvedParams.id} partnerName={partner?.username} />
+            )}
             <MoodSelector spaceId={resolvedParams.id} partnerName={partner?.username} />
             <FrustrationButtons spaceId={resolvedParams.id} partnerName={partner?.username} />
           </div>
