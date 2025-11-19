@@ -19,6 +19,13 @@ export function getNotificationText(type: NotificationType, payload: Payload) {
         `${name} is on a sutta break.`,
         `${name} just stepped out for a smoke.`,
         `Sutta time for ${name}!`,
+        `${name} is taking a smoke break.`,
+        `Smoke break! ${name} stepped out.`,
+        `${name} went for a quick sutta.`,
+        `${name} needs a sutta moment.`,
+        `${name} is having a cigarette break.`,
+        `Quick sutta break for ${name}.`,
+        `${name} stepped out for a smoke break.`,
       ];
       break;
     case 'sutta_sos':
