@@ -38,13 +38,11 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
       // Load space and mood in parallel
       const [spacesResponse, moodResponse] = await Promise.all([
         fetch('/api/spaces'),
-        fetch(`/api/spaces/${resolvedParams.id}/mood`),
+        fetch(`/api/spaces/${resolvedParams.id}/mood`).catch(() => null),
       ]);
 
-      const [spacesData, moodData] = await Promise.all([
-        spacesResponse.json(),
-        moodResponse.json(),
-      ]);
+      const spacesData = await spacesResponse.json();
+      const moodData = moodResponse ? await moodResponse.json() : {};
 
       const foundSpace = spacesData.spaces?.find((s: any) => s.id === resolvedParams.id);
 
