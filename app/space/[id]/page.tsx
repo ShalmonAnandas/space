@@ -24,7 +24,7 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
 
   const loadSpaceData = useCallback(async () => {
     try {
-      // Check auth
+      // Check auth first
       const authResponse = await fetch('/api/auth/me');
       const authData = await authResponse.json();
 
@@ -35,9 +35,17 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
 
       setUser(authData);
 
-      // Load space
-      const spacesResponse = await fetch('/api/spaces');
-      const spacesData = await spacesResponse.json();
+      // Load space and mood in parallel
+      const [spacesResponse, moodResponse] = await Promise.all([
+        fetch('/api/spaces'),
+        fetch(`/api/spaces/${resolvedParams.id}/mood`),
+      ]);
+
+      const [spacesData, moodData] = await Promise.all([
+        spacesResponse.json(),
+        moodResponse.json(),
+      ]);
+
       const foundSpace = spacesData.spaces?.find((s: any) => s.id === resolvedParams.id);
 
       if (!foundSpace) {
@@ -47,9 +55,6 @@ export default function SpacePage({ params }: { params: Promise<{ id: string }> 
 
       setSpace(foundSpace);
 
-      // Load partner's mood
-      const moodResponse = await fetch(`/api/spaces/${resolvedParams.id}/mood`);
-      const moodData = await moodResponse.json();
       if (moodData.partnerMood) {
         setPartnerMood(moodData.partnerMood.mood);
       }
