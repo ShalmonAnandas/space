@@ -33,26 +33,23 @@ export async function GET(
         .order('createdAt', { ascending: false })
         .range(1, 5);
 
-      // Fetch author info for each notice
-      const transformedNotices = await Promise.all(
-        (historicalNotices || []).map(async (notice) => {
-          const { data: author } = await supabase
-            .from('User')
-            .select('id, username')
-            .eq('id', notice.authorId)
-            .single();
+      // Fetch author info in batch
+      const authorIds = [...new Set((historicalNotices || []).map(n => n.authorId))];
+      const { data: authors } = await supabase
+        .from('User')
+        .select('id, username')
+        .in('id', authorIds);
+      const authorMap = new Map((authors || []).map(a => [a.id, a]));
 
-          return {
-            id: notice.id,
-            message: notice.content,
-            postedBy: notice.authorId,
-            postedByUsername: author?.username,
-            seenAt: notice.seen ? notice.createdAt : null,
-            editedAt: notice.isEdited ? notice.createdAt : null,
-            createdAt: notice.createdAt,
-          };
-        })
-      );
+      const transformedNotices = (historicalNotices || []).map((notice) => ({
+        id: notice.id,
+        message: notice.content,
+        postedBy: notice.authorId,
+        postedByUsername: authorMap.get(notice.authorId)?.username,
+        seenAt: notice.seen ? notice.createdAt : null,
+        editedAt: notice.isEdited ? notice.createdAt : null,
+        createdAt: notice.createdAt,
+      }));
 
       return NextResponse.json({ notices: transformedNotices });
     }

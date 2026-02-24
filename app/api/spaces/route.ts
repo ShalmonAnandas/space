@@ -14,28 +14,26 @@ export async function GET(request: NextRequest) {
 
     if (error) throw error;
 
-    // Fetch user info for each space
-    const spacesWithUsers = await Promise.all(
-      (spaces || []).map(async (space) => {
-        const { data: user1 } = await supabase
-          .from('User')
-          .select('id, username')
-          .eq('id', space.userId1)
-          .single();
+    // Collect all unique user IDs
+    const userIds = new Set<string>();
+    (spaces || []).forEach((space) => {
+      userIds.add(space.userId1);
+      if (space.userId2) userIds.add(space.userId2);
+    });
 
-        let user2 = null;
-        if (space.userId2) {
-          const { data } = await supabase
-            .from('User')
-            .select('id, username')
-            .eq('id', space.userId2)
-            .single();
-          user2 = data;
-        }
+    // Batch fetch all users
+    const { data: users } = await supabase
+      .from('User')
+      .select('id, username')
+      .in('id', Array.from(userIds));
 
-        return { ...space, user1, user2 };
-      })
-    );
+    const userMap = new Map((users || []).map(u => [u.id, u]));
+
+    const spacesWithUsers = (spaces || []).map((space) => ({
+      ...space,
+      user1: userMap.get(space.userId1) || null,
+      user2: space.userId2 ? userMap.get(space.userId2) || null : null,
+    }));
 
     return NextResponse.json({ spaces: spacesWithUsers });
   } catch (error: any) {

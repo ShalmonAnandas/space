@@ -23,17 +23,18 @@ export async function GET(request: NextRequest) {
 
     const { data: notifications } = await query;
 
-    // Fetch space names for notifications
-    const notificationsWithSpace = await Promise.all(
-      (notifications || []).map(async (n) => {
-        const { data: space } = await supabase
-          .from('Space')
-          .select('name')
-          .eq('id', n.spaceId)
-          .single();
-        return { ...n, space: space || { name: '' } };
-      })
-    );
+    // Batch fetch space names
+    const spaceIds = [...new Set((notifications || []).map(n => n.spaceId))];
+    const { data: spaces } = await supabase
+      .from('Space')
+      .select('id, name')
+      .in('id', spaceIds);
+    const spaceMap = new Map((spaces || []).map(s => [s.id, { name: s.name }]));
+
+    const notificationsWithSpace = (notifications || []).map((n) => ({
+      ...n,
+      space: spaceMap.get(n.spaceId) || { name: '' },
+    }));
 
     return NextResponse.json({ notifications: notificationsWithSpace });
   } catch (error: any) {
