@@ -10,7 +10,7 @@ export async function GET(
 
     const { data: invite } = await supabase
       .from('Invite')
-      .select('*, Space!Invite_spaceId_fkey(*, user1:User!Space_userId1_fkey(username))')
+      .select('*, space:Space!Invite_spaceId_fkey(*, user1:User!Space_userId1_fkey(username))')
       .eq('id', inviteId)
       .maybeSingle();
 
@@ -18,7 +18,7 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid invite' }, { status: 404 });
     }
 
-    if (invite.Space.userId2) {
+    if (invite.space.userId2) {
       return NextResponse.json(
         { error: 'Space is already full' },
         { status: 400 }
@@ -28,9 +28,9 @@ export async function GET(
     return NextResponse.json({
       valid: true,
       space: {
-        id: invite.Space.id,
-        name: invite.Space.name,
-        creatorUsername: invite.Space.user1.username,
+        id: invite.space.id,
+        name: invite.space.name,
+        creatorUsername: invite.space.user1.username,
       },
     });
   } catch (error) {

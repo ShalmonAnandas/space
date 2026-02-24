@@ -12,7 +12,7 @@ export async function POST(
 
     const { data: invite } = await supabase
       .from('Invite')
-      .select('*, Space!Invite_spaceId_fkey(*)')
+      .select('*, space:Space!Invite_spaceId_fkey(*)')
       .eq('id', inviteId)
       .maybeSingle();
 
@@ -20,14 +20,14 @@ export async function POST(
       return NextResponse.json({ error: 'Invalid invite' }, { status: 404 });
     }
 
-    if (invite.Space.userId2) {
+    if (invite.space.userId2) {
       return NextResponse.json(
         { error: 'Space is already full' },
         { status: 400 }
       );
     }
 
-    if (invite.Space.userId1 === user.userId) {
+    if (invite.space.userId1 === user.userId) {
       return NextResponse.json(
         { error: 'You cannot join your own space' },
         { status: 400 }
@@ -38,7 +38,7 @@ export async function POST(
     const { data: user1 } = await supabase
       .from('User')
       .select('username')
-      .eq('id', invite.Space.userId1)
+      .eq('id', invite.space.userId1)
       .single();
 
     // Update space with userId2 and set name
