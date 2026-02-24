@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { getIronSession } from 'iron-session';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { sessionOptions, SessionData } from '@/lib/session';
 import { cookies } from 'next/headers';
 
@@ -24,9 +24,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if username already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { username },
-    });
+    const { data: existingUser } = await supabase
+      .from('User')
+      .select('id')
+      .eq('username', username)
+      .single();
 
     if (existingUser) {
       return NextResponse.json(
@@ -39,12 +41,19 @@ export async function POST(request: NextRequest) {
     const passwordHash = await bcrypt.hash(password, 10);
 
     // Create user
-    const user = await prisma.user.create({
-      data: {
-        username,
-        passwordHash,
-      },
-    });
+    const { data: user, error: insertError } = await supabase
+      .from('User')
+      .insert({ username, passwordHash })
+      .select()
+      .single();
+
+    if (insertError || !user) {
+      console.error('Insert error:', insertError);
+      return NextResponse.json(
+        { error: 'Registration failed' },
+        { status: 500 }
+      );
+    }
 
     // Create session
     const session = await getIronSession<SessionData>(await cookies(), sessionOptions);

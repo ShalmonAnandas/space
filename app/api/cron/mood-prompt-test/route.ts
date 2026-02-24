@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { sendNotification } from '@/lib/push';
 
 export async function GET(request: NextRequest) {
@@ -12,31 +12,33 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get all users with spaces
-    const users = await prisma.user.findMany({
-      where: {
-        OR: [
-          { spacesAsUser1: { some: {} } },
-          { spacesAsUser2: { some: {} } },
-        ],
-      },
-      select: {
-        id: true,
-        username: true,
-      },
+    // Get all spaces (to find users with spaces)
+    const { data: spaces } = await supabase
+      .from('Space')
+      .select('userId1, userId2');
+
+    // Collect unique user IDs
+    const userIds = new Set<string>();
+    (spaces || []).forEach((s) => {
+      userIds.add(s.userId1);
+      if (s.userId2) userIds.add(s.userId2);
     });
+
+    // Get user info
+    const { data: users } = await supabase
+      .from('User')
+      .select('id, username')
+      .in('id', Array.from(userIds));
 
     // Send mood prompt to all users
     const results = await Promise.allSettled(
-      users.map(async (user: any) => {
-        const userSpace = await prisma.space.findFirst({
-          where: {
-            OR: [
-              { userId1: user.id },
-              { userId2: user.id },
-            ],
-          },
-        });
+      (users || []).map(async (user: any) => {
+        const { data: userSpace } = await supabase
+          .from('Space')
+          .select('id')
+          .or(`userId1.eq.${user.id},userId2.eq.${user.id}`)
+          .limit(1)
+          .single();
 
         if (userSpace) {
           await sendNotification(
@@ -56,7 +58,7 @@ export async function GET(request: NextRequest) {
       success: true,
       sent: successful,
       failed,
-      total: users.length,
+      total: (users || []).length,
       message: 'Test cron executed successfully',
     });
   } catch (error) {

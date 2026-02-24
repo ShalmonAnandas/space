@@ -1,52 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
     const user = await requireAuth();
 
-    const spaces = await prisma.space.findMany({
-      where: {
-        OR: [
-          { userId1: user.userId },
-          { userId2: user.userId },
-        ],
-      },
-      include: {
-        user1: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        user2: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+    const { data: spaces, error } = await supabase
+      .from('Space')
+      .select('*')
+      .or(`userId1.eq.${user.userId},userId2.eq.${user.userId}`)
+      .order('createdAt', { ascending: false });
 
-    return NextResponse.json({ spaces });
+    if (error) throw error;
+
+    // Fetch user info for each space
+    const spacesWithUsers = await Promise.all(
+      (spaces || []).map(async (space) => {
+        const { data: user1 } = await supabase
+          .from('User')
+          .select('id, username')
+          .eq('id', space.userId1)
+          .single();
+
+        let user2 = null;
+        if (space.userId2) {
+          const { data } = await supabase
+            .from('User')
+            .select('id, username')
+            .eq('id', space.userId2)
+            .single();
+          user2 = data;
+        }
+
+        return { ...space, user1, user2 };
+      })
+    );
+
+    return NextResponse.json({ spaces: spacesWithUsers });
   } catch (error: any) {
     if (error.message === 'Unauthorized') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     console.error('Error fetching spaces:', error);
-    
-    // Provide more specific error message for database schema issues
-    if (error.code === 'P2010' || error.message?.includes('column') || error.message?.includes('does not exist')) {
-      return NextResponse.json(
-        { error: 'Database schema mismatch. Please run database migrations: npx prisma migrate deploy' },
-        { status: 500 }
-      );
-    }
-    
     return NextResponse.json(
       { error: 'Failed to fetch spaces' },
       { status: 500 }
@@ -60,23 +56,26 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { suttaEnabled = true } = body;
 
-    const space = await prisma.space.create({
-      data: {
+    const { data: space, error } = await supabase
+      .from('Space')
+      .insert({
         name: 'Pending',
         userId1: user.userId,
         suttaEnabled: suttaEnabled,
-      },
-      include: {
-        user1: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-    });
+      })
+      .select()
+      .single();
 
-    return NextResponse.json({ space });
+    if (error || !space) throw error;
+
+    // Fetch user1 info
+    const { data: user1 } = await supabase
+      .from('User')
+      .select('id, username')
+      .eq('id', space.userId1)
+      .single();
+
+    return NextResponse.json({ space: { ...space, user1 } });
   } catch (error: any) {
     if (error.message === 'Unauthorized') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
@@ -10,25 +10,32 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const unreadOnly = searchParams.get('unreadOnly') === 'true';
 
-    const notifications = await prisma.notificationQueue.findMany({
-      where: {
-        userId: user.userId,
-        ...(unreadOnly ? { read: false } : {}),
-      },
-      include: {
-        space: {
-          select: {
-            name: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      take: 100, // Limit to last 100 notifications
-    });
+    let query = supabase
+      .from('NotificationQueue')
+      .select('*')
+      .eq('userId', user.userId)
+      .order('createdAt', { ascending: false })
+      .limit(100);
 
-    return NextResponse.json({ notifications });
+    if (unreadOnly) {
+      query = query.eq('read', false);
+    }
+
+    const { data: notifications } = await query;
+
+    // Fetch space names for notifications
+    const notificationsWithSpace = await Promise.all(
+      (notifications || []).map(async (n) => {
+        const { data: space } = await supabase
+          .from('Space')
+          .select('name')
+          .eq('id', n.spaceId)
+          .single();
+        return { ...n, space: space || { name: '' } };
+      })
+    );
+
+    return NextResponse.json({ notifications: notificationsWithSpace });
   } catch (error: any) {
     if (error.message === 'Unauthorized') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

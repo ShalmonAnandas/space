@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
@@ -7,16 +7,23 @@ export async function POST(request: NextRequest) {
     const user = await requireAuth();
     const { endpoint } = await request.json();
 
-    // Delete subscription by endpoint
-    await prisma.pushSubscription.deleteMany({
-      where: {
-        userId: user.userId,
-        subscription: {
-          path: ['endpoint'],
-          equals: endpoint,
-        },
-      },
-    });
+    // Get all user's subscriptions and find matching endpoint
+    const { data: subscriptions } = await supabase
+      .from('PushSubscription')
+      .select('*')
+      .eq('userId', user.userId);
+
+    // Filter by endpoint in the JSON subscription field
+    const toDelete = (subscriptions || []).filter(
+      (sub: any) => (sub.subscription as any)?.endpoint === endpoint
+    );
+
+    if (toDelete.length > 0) {
+      await supabase
+        .from('PushSubscription')
+        .delete()
+        .in('id', toDelete.map((s: any) => s.id));
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

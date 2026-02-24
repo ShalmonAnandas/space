@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 import { sendNotification } from '@/lib/push';
 
@@ -12,15 +12,12 @@ export async function GET(
     const { id: spaceId } = await params;
 
     // Verify user is part of this space
-    const space = await prisma.space.findFirst({
-      where: {
-        id: spaceId,
-        OR: [
-          { userId1: user.userId },
-          { userId2: user.userId },
-        ],
-      },
-    });
+    const { data: space } = await supabase
+      .from('Space')
+      .select('*')
+      .eq('id', spaceId)
+      .or(`userId1.eq.${user.userId},userId2.eq.${user.userId}`)
+      .single();
 
     if (!space) {
       return NextResponse.json({ error: 'Space not found' }, { status: 404 });
@@ -30,41 +27,25 @@ export async function GET(
     const partnerId = space.userId1 === user.userId ? space.userId2 : space.userId1;
 
     // Get unreacted gossip from partner
-    const unreactedGossip = await prisma.gossip.findMany({
-      where: {
-        spaceId,
-        authorId: partnerId!,
-        reacted: false,
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: 'asc',
-      },
-    });
+    const { data: unreactedGossip } = await supabase
+      .from('Gossip')
+      .select('*')
+      .eq('spaceId', spaceId)
+      .eq('authorId', partnerId!)
+      .eq('reacted', false)
+      .order('createdAt', { ascending: true });
 
     // Mark all as seen (but not reacted)
-    if (unreactedGossip.length > 0) {
-      await prisma.gossip.updateMany({
-        where: {
-          id: {
-            in: unreactedGossip.map((g: any) => g.id),
-          },
-        },
-        data: {
-          seen: true,
-        },
-      });
+    const gossipIds = (unreactedGossip || []).map((g: any) => g.id);
+    if (gossipIds.length > 0) {
+      await supabase
+        .from('Gossip')
+        .update({ seen: true })
+        .in('id', gossipIds);
     }
 
     // Transform gossip to match frontend expectations (messages array)
-    const transformedMessages = unreactedGossip.map((g: any) => ({
+    const transformedMessages = (unreactedGossip || []).map((g: any) => ({
       id: g.id,
       message: g.content,
       postedBy: g.authorId,
@@ -104,41 +85,38 @@ export async function POST(
     }
 
     // Verify user is part of this space
-    const space = await prisma.space.findFirst({
-      where: {
-        id: spaceId,
-        OR: [
-          { userId1: user.userId },
-          { userId2: user.userId },
-        ],
-      },
-      include: {
-        user1: { select: { id: true, username: true } },
-        user2: { select: { id: true, username: true } },
-      },
-    });
+    const { data: space } = await supabase
+      .from('Space')
+      .select('*')
+      .eq('id', spaceId)
+      .or(`userId1.eq.${user.userId},userId2.eq.${user.userId}`)
+      .single();
 
     if (!space || !space.userId2) {
       return NextResponse.json({ error: 'Space not found or incomplete' }, { status: 404 });
     }
 
     // Create gossip
-    const gossip = await prisma.gossip.create({
-      data: {
+    const { data: gossip, error } = await supabase
+      .from('Gossip')
+      .insert({
         spaceId,
         authorId: user.userId,
         content: content.trim(),
-      },
-    });
+      })
+      .select()
+      .single();
+
+    if (error || !gossip) throw error;
 
     // Get partner and send notification
-    const partner = space.userId1 === user.userId ? space.user2 : space.user1;
+    const partnerId = space.userId1 === user.userId ? space.userId2 : space.userId1;
     
     // Fire-and-forget push to avoid blocking the response
     if (isVent) {
       // For vent messages, send the actual text in the notification
       sendNotification(
-        partner!.id,
+        partnerId!,
         spaceId,
         'vent',
         { name: user.username, ventText: content.trim() }
@@ -146,7 +124,7 @@ export async function POST(
     } else {
       // For regular gossip, send generic notification
       sendNotification(
-        partner!.id,
+        partnerId!,
         spaceId,
         'gossip',
         { name: user.username }

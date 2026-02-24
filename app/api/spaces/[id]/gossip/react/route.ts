@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 import { sendNotification } from '@/lib/push';
 
@@ -21,19 +21,12 @@ export async function POST(
     }
 
     // Verify user is part of this space
-    const space = await prisma.space.findFirst({
-      where: {
-        id: spaceId,
-        OR: [
-          { userId1: user.userId },
-          { userId2: user.userId },
-        ],
-      },
-      include: {
-        user1: { select: { id: true, username: true } },
-        user2: { select: { id: true, username: true } },
-      },
-    });
+    const { data: space } = await supabase
+      .from('Space')
+      .select('*')
+      .eq('id', spaceId)
+      .or(`userId1.eq.${user.userId},userId2.eq.${user.userId}`)
+      .single();
 
     if (!space || !space.userId2) {
       return NextResponse.json({ error: 'Space not found' }, { status: 404 });
@@ -41,13 +34,13 @@ export async function POST(
 
     // Get the gossip and verify it's from the partner
     const partnerId = space.userId1 === user.userId ? space.userId2 : space.userId1;
-    const gossip = await prisma.gossip.findFirst({
-      where: {
-        id: messageId,
-        spaceId,
-        authorId: partnerId!,
-      },
-    });
+    const { data: gossip } = await supabase
+      .from('Gossip')
+      .select('*')
+      .eq('id', messageId)
+      .eq('spaceId', spaceId)
+      .eq('authorId', partnerId!)
+      .single();
 
     if (!gossip) {
       return NextResponse.json(
@@ -57,17 +50,15 @@ export async function POST(
     }
 
     // Mark as reacted
-    await prisma.gossip.update({
-      where: { id: messageId },
-      data: { reacted: true },
-    });
+    await supabase
+      .from('Gossip')
+      .update({ reacted: true })
+      .eq('id', messageId);
 
     // Send notification to the author
-    const author = space.userId1 === gossip.authorId ? space.user1 : space.user2;
-    
     // Fire-and-forget push to avoid blocking the response
     sendNotification(
-      author!.id,
+      gossip.authorId,
       spaceId,
       'gossip_reaction',
       { name: user.username }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 
 export async function GET(
   request: NextRequest,
@@ -8,38 +8,48 @@ export async function GET(
   try {
     const { inviteId } = await params;
 
-    const invite = await prisma.invite.findUnique({
-      where: { id: inviteId },
-      include: {
-        space: {
-          include: {
-            user1: {
-              select: {
-                username: true,
-              },
-            },
-          },
-        },
-      },
-    });
+    // Get invite with space info
+    const { data: invite } = await supabase
+      .from('Invite')
+      .select('*')
+      .eq('id', inviteId)
+      .single();
 
     if (!invite) {
       return NextResponse.json({ error: 'Invalid invite' }, { status: 404 });
     }
 
-    if (invite.space.userId2) {
+    // Get space info
+    const { data: space } = await supabase
+      .from('Space')
+      .select('*')
+      .eq('id', invite.spaceId)
+      .single();
+
+    if (!space) {
+      return NextResponse.json({ error: 'Invalid invite' }, { status: 404 });
+    }
+
+    if (space.userId2) {
       return NextResponse.json(
         { error: 'Space is already full' },
         { status: 400 }
       );
     }
 
+    // Get creator username
+    const { data: user1 } = await supabase
+      .from('User')
+      .select('username')
+      .eq('id', space.userId1)
+      .single();
+
     return NextResponse.json({
       valid: true,
       space: {
-        id: invite.space.id,
-        name: invite.space.name,
-        creatorUsername: invite.space.user1.username,
+        id: space.id,
+        name: space.name,
+        creatorUsername: user1?.username,
       },
     });
   } catch (error) {

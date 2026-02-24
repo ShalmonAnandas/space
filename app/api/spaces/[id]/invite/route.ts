@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 
 export async function POST(
@@ -11,10 +11,11 @@ export async function POST(
     const { id } = await params;
 
     // Check if space exists and user is userId1 (creator)
-    const space = await prisma.space.findUnique({
-      where: { id },
-      include: { invite: true },
-    });
+    const { data: space } = await supabase
+      .from('Space')
+      .select('*')
+      .eq('id', id)
+      .single();
 
     if (!space) {
       return NextResponse.json({ error: 'Space not found' }, { status: 404 });
@@ -35,19 +36,27 @@ export async function POST(
     }
 
     // Delete existing invite if any
-    if (space.invite) {
-      await prisma.invite.delete({
-        where: { id: space.invite.id },
-      });
+    const { data: existingInvite } = await supabase
+      .from('Invite')
+      .select('id')
+      .eq('spaceId', id)
+      .single();
+
+    if (existingInvite) {
+      await supabase.from('Invite').delete().eq('id', existingInvite.id);
     }
 
     // Create new invite
-    const invite = await prisma.invite.create({
-      data: {
+    const { data: invite, error } = await supabase
+      .from('Invite')
+      .insert({
         spaceId: id,
         creatorId: user.userId,
-      },
-    });
+      })
+      .select()
+      .single();
+
+    if (error || !invite) throw error;
 
     return NextResponse.json({
       inviteId: invite.id,
