@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 
 export async function POST(
@@ -11,15 +11,11 @@ export async function POST(
     const { id } = await params;
 
     // Mark notification as read
-    await prisma.notificationQueue.updateMany({
-      where: {
-        id: parseInt(id),
-        userId: user.userId,
-      },
-      data: {
-        read: true,
-      },
-    });
+    await supabase
+      .from('NotificationQueue')
+      .update({ read: true })
+      .eq('id', parseInt(id))
+      .eq('userId', user.userId);
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

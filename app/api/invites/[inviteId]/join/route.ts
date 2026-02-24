@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 
 export async function POST(
@@ -10,25 +10,24 @@ export async function POST(
     const user = await requireAuth();
     const { inviteId } = await params;
 
-    const invite = await prisma.invite.findUnique({
-      where: { id: inviteId },
-      include: {
-        space: true,
-      },
-    });
+    const { data: invite } = await supabase
+      .from('Invite')
+      .select('*, Space!Invite_spaceId_fkey(*)')
+      .eq('id', inviteId)
+      .maybeSingle();
 
     if (!invite) {
       return NextResponse.json({ error: 'Invalid invite' }, { status: 404 });
     }
 
-    if (invite.space.userId2) {
+    if (invite.Space.userId2) {
       return NextResponse.json(
         { error: 'Space is already full' },
         { status: 400 }
       );
     }
 
-    if (invite.space.userId1 === user.userId) {
+    if (invite.Space.userId1 === user.userId) {
       return NextResponse.json(
         { error: 'You cannot join your own space' },
         { status: 400 }
@@ -36,32 +35,31 @@ export async function POST(
     }
 
     // Get user1 to create the space name
-    const user1 = await prisma.user.findUnique({
-      where: { id: invite.space.userId1 },
-      select: { username: true },
-    });
+    const { data: user1 } = await supabase
+      .from('User')
+      .select('username')
+      .eq('id', invite.Space.userId1)
+      .single();
 
-    // Update space with userId2, set name to "<user1> & <user2>", and delete invite
-    const [updatedSpace] = await prisma.$transaction([
-      prisma.space.update({
-        where: { id: invite.spaceId },
-        data: { 
-          userId2: user.userId,
-          name: `${user1?.username} & ${user.username}`,
-        },
-        include: {
-          user1: {
-            select: { id: true, username: true },
-          },
-          user2: {
-            select: { id: true, username: true },
-          },
-        },
-      }),
-      prisma.invite.delete({
-        where: { id: inviteId },
-      }),
-    ]);
+    // Update space with userId2 and set name
+    const { data: updatedSpace, error: updateError } = await supabase
+      .from('Space')
+      .update({
+        userId2: user.userId,
+        name: `${user1?.username} & ${user.username}`,
+      })
+      .eq('id', invite.spaceId)
+      .select(`
+        *,
+        user1:User!Space_userId1_fkey(id, username),
+        user2:User!Space_userId2_fkey(id, username)
+      `)
+      .single();
+
+    if (updateError) throw updateError;
+
+    // Delete the invite
+    await supabase.from('Invite').delete().eq('id', inviteId);
 
     return NextResponse.json({ success: true, space: updatedSpace });
   } catch (error: any) {

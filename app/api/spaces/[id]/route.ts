@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 
 export async function DELETE(
@@ -11,9 +11,11 @@ export async function DELETE(
     const { id } = await params;
 
     // Check if user is part of this space
-    const space = await prisma.space.findUnique({
-      where: { id },
-    });
+    const { data: space } = await supabase
+      .from('Space')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
 
     if (!space) {
       return NextResponse.json({ error: 'Space not found' }, { status: 404 });
@@ -24,9 +26,7 @@ export async function DELETE(
     }
 
     // Delete the space (CASCADE will handle related records)
-    await prisma.space.delete({
-      where: { id },
-    });
+    await supabase.from('Space').delete().eq('id', id);
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
