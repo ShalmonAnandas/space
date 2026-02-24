@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 import { sendNotification } from '@/lib/push';
 
@@ -12,19 +12,16 @@ export async function POST(
     const { id: spaceId } = await params;
 
     // Verify user is part of this space
-    const space = await prisma.space.findFirst({
-      where: {
-        id: spaceId,
-        OR: [
-          { userId1: user.userId },
-          { userId2: user.userId },
-        ],
-      },
-      include: {
-        user1: { select: { id: true, username: true } },
-        user2: { select: { id: true, username: true } },
-      },
-    });
+    const { data: space } = await supabase
+      .from('Space')
+      .select(`
+        *,
+        user1:User!Space_userId1_fkey(id, username),
+        user2:User!Space_userId2_fkey(id, username)
+      `)
+      .eq('id', spaceId)
+      .or(`userId1.eq.${user.userId},userId2.eq.${user.userId}`)
+      .maybeSingle();
 
     if (!space) {
       return NextResponse.json({ error: 'Space not found' }, { status: 404 });
@@ -32,19 +29,14 @@ export async function POST(
 
     // Get partner's ID
     const partnerId = space.userId1 === user.userId ? space.userId2 : space.userId1;
-    const partner = space.userId1 === user.userId ? space.user2 : space.user1;
 
     // Mark partner's latest unseen notice as seen
-    await prisma.notice.updateMany({
-      where: {
-        spaceId,
-        authorId: partnerId!,
-        seen: false,
-      },
-      data: {
-        seen: true,
-      },
-    });
+    await supabase
+      .from('Notice')
+      .update({ seen: true })
+      .eq('spaceId', spaceId)
+      .eq('authorId', partnerId!)
+      .eq('seen', false);
 
     // Send notification to the partner (author of the notice)
     sendNotification(

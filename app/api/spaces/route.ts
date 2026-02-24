@@ -1,36 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
     const user = await requireAuth();
 
-    const spaces = await prisma.space.findMany({
-      where: {
-        OR: [
-          { userId1: user.userId },
-          { userId2: user.userId },
-        ],
-      },
-      include: {
-        user1: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        user2: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+    const { data: spaces, error } = await supabase
+      .from('Space')
+      .select(`
+        *,
+        user1:User!Space_userId1_fkey(id, username),
+        user2:User!Space_userId2_fkey(id, username)
+      `)
+      .or(`userId1.eq.${user.userId},userId2.eq.${user.userId}`)
+      .order('createdAt', { ascending: false });
+
+    if (error) throw error;
 
     return NextResponse.json({ spaces });
   } catch (error: any) {
@@ -38,15 +24,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     console.error('Error fetching spaces:', error);
-    
-    // Provide more specific error message for database schema issues
-    if (error.code === 'P2010' || error.message?.includes('column') || error.message?.includes('does not exist')) {
-      return NextResponse.json(
-        { error: 'Database schema mismatch. Please run database migrations: npx prisma migrate deploy' },
-        { status: 500 }
-      );
-    }
-    
     return NextResponse.json(
       { error: 'Failed to fetch spaces' },
       { status: 500 }
@@ -60,21 +37,20 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { suttaEnabled = true } = body;
 
-    const space = await prisma.space.create({
-      data: {
+    const { data: space, error } = await supabase
+      .from('Space')
+      .insert({
         name: 'Pending',
         userId1: user.userId,
-        suttaEnabled: suttaEnabled,
-      },
-      include: {
-        user1: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-    });
+        suttaEnabled,
+      })
+      .select(`
+        *,
+        user1:User!Space_userId1_fkey(id, username)
+      `)
+      .single();
+
+    if (error) throw error;
 
     return NextResponse.json({ space });
   } catch (error: any) {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 
 export async function GET(
@@ -13,15 +13,12 @@ export async function GET(
     const history = searchParams.get('history') === 'true';
 
     // Verify user is part of this space
-    const space = await prisma.space.findFirst({
-      where: {
-        id: spaceId,
-        OR: [
-          { userId1: user.userId },
-          { userId2: user.userId },
-        ],
-      },
-    });
+    const { data: space } = await supabase
+      .from('Space')
+      .select('*')
+      .eq('id', spaceId)
+      .or(`userId1.eq.${user.userId},userId2.eq.${user.userId}`)
+      .maybeSingle();
 
     if (!space) {
       return NextResponse.json({ error: 'Space not found' }, { status: 404 });
@@ -29,22 +26,14 @@ export async function GET(
 
     if (history) {
       // Fetch last 5 notices (excluding the most recent one)
-      const historicalNotices = await prisma.notice.findMany({
-        where: { spaceId },
-        orderBy: { createdAt: 'desc' },
-        skip: 1, // Skip the most recent one
-        take: 5,
-        include: {
-          author: {
-            select: {
-              id: true,
-              username: true,
-            },
-          },
-        },
-      });
+      const { data: historicalNotices } = await supabase
+        .from('Notice')
+        .select('*, author:User!Notice_authorId_fkey(id, username)')
+        .eq('spaceId', spaceId)
+        .order('createdAt', { ascending: false })
+        .range(1, 5);
 
-      const transformedNotices = historicalNotices.map((notice) => ({
+      const transformedNotices = (historicalNotices || []).map((notice: any) => ({
         id: notice.id,
         message: notice.content,
         postedBy: notice.authorId,
@@ -58,18 +47,13 @@ export async function GET(
     }
 
     // Get the most recent notice
-    const latestNotice = await prisma.notice.findFirst({
-      where: { spaceId },
-      orderBy: { createdAt: 'desc' },
-      include: {
-        author: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-    });
+    const { data: latestNotice } = await supabase
+      .from('Notice')
+      .select('*, author:User!Notice_authorId_fkey(id, username)')
+      .eq('spaceId', spaceId)
+      .order('createdAt', { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
     // Check if user can post
     let canPost = true;
@@ -140,25 +124,25 @@ export async function POST(
     }
 
     // Verify user is part of this space
-    const space = await prisma.space.findFirst({
-      where: {
-        id: spaceId,
-        OR: [
-          { userId1: user.userId },
-          { userId2: user.userId },
-        ],
-      },
-    });
+    const { data: space } = await supabase
+      .from('Space')
+      .select('*')
+      .eq('id', spaceId)
+      .or(`userId1.eq.${user.userId},userId2.eq.${user.userId}`)
+      .maybeSingle();
 
     if (!space) {
       return NextResponse.json({ error: 'Space not found' }, { status: 404 });
     }
 
     // Check if user can post (same logic as GET)
-    const latestNotice = await prisma.notice.findFirst({
-      where: { spaceId },
-      orderBy: { createdAt: 'desc' },
-    });
+    const { data: latestNotice } = await supabase
+      .from('Notice')
+      .select('*')
+      .eq('spaceId', spaceId)
+      .order('createdAt', { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
     if (latestNotice && latestNotice.authorId === user.userId) {
       if (!latestNotice.seen) {
@@ -180,21 +164,19 @@ export async function POST(
     }
 
     // Create notice
-    const notice = await prisma.notice.create({
-      data: {
+    const { data: notice, error: createError } = await supabase
+      .from('Notice')
+      .insert({
         spaceId,
         authorId: user.userId,
         content: content.trim(),
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-    });
+      })
+      .select('*, author:User!Notice_authorId_fkey(id, username)')
+      .single();
+
+    if (createError || !notice) {
+      throw createError || new Error('Failed to create notice');
+    }
 
     // Transform notice to match frontend expectations
     const transformedNotice = {
@@ -238,13 +220,14 @@ export async function PUT(
     }
 
     // Find user's latest notice
-    const latestNotice = await prisma.notice.findFirst({
-      where: {
-        spaceId,
-        authorId: user.userId,
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+    const { data: latestNotice } = await supabase
+      .from('Notice')
+      .select('*')
+      .eq('spaceId', spaceId)
+      .eq('authorId', user.userId)
+      .order('createdAt', { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
     if (!latestNotice) {
       return NextResponse.json(
@@ -261,21 +244,19 @@ export async function PUT(
     }
 
     // Update notice
-    const updatedNotice = await prisma.notice.update({
-      where: { id: latestNotice.id },
-      data: {
+    const { data: updatedNotice, error: updateError } = await supabase
+      .from('Notice')
+      .update({
         content: content.trim(),
         isEdited: true,
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-    });
+      })
+      .eq('id', latestNotice.id)
+      .select('*, author:User!Notice_authorId_fkey(id, username)')
+      .single();
+
+    if (updateError || !updatedNotice) {
+      throw updateError || new Error('Failed to update notice');
+    }
 
     // Transform notice to match frontend expectations
     const transformedNotice = {

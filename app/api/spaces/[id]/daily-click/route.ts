@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 import { sendNotification } from '@/lib/push';
 
@@ -22,19 +22,16 @@ export async function POST(
     }
 
     // Verify user is part of this space
-    const space = await prisma.space.findFirst({
-      where: {
-        id: spaceId,
-        OR: [
-          { userId1: user.userId },
-          { userId2: user.userId },
-        ],
-      },
-      include: {
-        user1: { select: { id: true, username: true } },
-        user2: { select: { id: true, username: true } },
-      },
-    });
+    const { data: space } = await supabase
+      .from('Space')
+      .select(`
+        *,
+        user1:User!Space_userId1_fkey(id, username),
+        user2:User!Space_userId2_fkey(id, username)
+      `)
+      .eq('id', spaceId)
+      .or(`userId1.eq.${user.userId},userId2.eq.${user.userId}`)
+      .maybeSingle();
 
     if (!space || !space.userId2) {
       return NextResponse.json({ error: 'Space not found or incomplete' }, { status: 404 });
@@ -61,12 +58,10 @@ export async function POST(
 
     // Handle Frustration buttons (no daily limit)
     // Log the click
-    await prisma.dailyClick.create({
-      data: {
-        spaceId,
-        userId: user.userId,
-        type,
-      },
+    await supabase.from('DailyClick').insert({
+      spaceId,
+      userId: user.userId,
+      type,
     });
 
     // Send notification to partner

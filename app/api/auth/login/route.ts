@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { getIronSession } from 'iron-session';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { sessionOptions, SessionData } from '@/lib/session';
 import { cookies } from 'next/headers';
 
@@ -17,9 +17,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Find user
-    const user = await prisma.user.findUnique({
-      where: { username },
-    });
+    const { data: user } = await supabase
+      .from('User')
+      .select('*')
+      .eq('username', username)
+      .maybeSingle();
 
     if (!user) {
       return NextResponse.json(

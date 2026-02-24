@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
@@ -8,15 +8,11 @@ export async function POST(request: NextRequest) {
     const { endpoint } = await request.json();
 
     // Delete subscription by endpoint
-    await prisma.pushSubscription.deleteMany({
-      where: {
-        userId: user.userId,
-        subscription: {
-          path: ['endpoint'],
-          equals: endpoint,
-        },
-      },
-    });
+    await supabase
+      .from('PushSubscription')
+      .delete()
+      .eq('userId', user.userId)
+      .filter('subscription->>endpoint', 'eq', endpoint);
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

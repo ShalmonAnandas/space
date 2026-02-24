@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { requireAuth } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
@@ -8,21 +8,25 @@ export async function POST(request: NextRequest) {
     const subscription = await request.json();
 
     // Save subscription to database
-    await prisma.pushSubscription.create({
-      data: {
+    const { error } = await supabase
+      .from('PushSubscription')
+      .insert({
         userId: user.userId,
         subscription,
-      },
-    });
+      });
+
+    if (error) {
+      // Handle unique constraint (already subscribed) as success to make this idempotent
+      if (error.code === '23505') {
+        return NextResponse.json({ success: true });
+      }
+      throw error;
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
     if (error.message === 'Unauthorized') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    // Handle unique constraint (already subscribed) as success to make this idempotent
-    if (error.code === 'P2002') {
-      return NextResponse.json({ success: true });
     }
     console.error('Error subscribing to push:', error);
     return NextResponse.json(

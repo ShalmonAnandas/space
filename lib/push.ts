@@ -1,5 +1,5 @@
 import webpush from 'web-push';
-import { prisma } from './prisma';
+import { supabase } from './supabase';
 import { getNotificationText } from './notifications';
 
 // Initialize web-push with VAPID keys
@@ -28,22 +28,21 @@ export async function sendNotification(
 
   try {
     // Store notification in database for history
-    await prisma.notificationQueue.create({
-      data: {
-        userId,
-        spaceId,
-        type,
-        content: payload as any,
-        read: false,
-      },
+    await supabase.from('NotificationQueue').insert({
+      userId,
+      spaceId,
+      type,
+      content: payload,
+      read: false,
     });
 
     // Send push notification
-    const subscriptions = await prisma.pushSubscription.findMany({
-      where: { userId },
-    });
+    const { data: subscriptions } = await supabase
+      .from('PushSubscription')
+      .select('*')
+      .eq('userId', userId);
 
-    const pushPromises = subscriptions.map(async (sub: any) => {
+    const pushPromises = (subscriptions || []).map(async (sub: any) => {
       try {
         await webpush.sendNotification(
           sub.subscription as any,
@@ -57,9 +56,10 @@ export async function sendNotification(
       } catch (error: any) {
         // If subscription is expired/invalid, delete it
         if (error.statusCode === 410 || error.statusCode === 404) {
-          await prisma.pushSubscription.delete({
-            where: { id: sub.id },
-          });
+          await supabase
+            .from('PushSubscription')
+            .delete()
+            .eq('id', sub.id);
         }
         throw error;
       }
