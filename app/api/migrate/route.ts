@@ -24,11 +24,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  if (!process.env.PRISMA_DATABASE_URL) {
+    return NextResponse.json(
+      { error: 'PRISMA_DATABASE_URL is not configured' },
+      { status: 500 },
+    );
+  }
+
   const startTime = Date.now();
   const results: Record<string, number> = {};
 
   // Connect to source (Prisma Postgres) via TCP
-  const source = postgres(process.env.PRISMA_DATABASE_URL!, {
+  const source = postgres(process.env.PRISMA_DATABASE_URL, {
     max: 1,
     idle_timeout: 20,
     connect_timeout: 30,
@@ -52,7 +59,7 @@ export async function POST(request: NextRequest) {
 
       // Upsert into Supabase in batches of 500
       const batchSize = 500;
-      let inserted = 0;
+      let processed = 0;
 
       for (let i = 0; i < data.length; i += batchSize) {
         const batch = data.slice(i, i + batchSize);
@@ -65,10 +72,10 @@ export async function POST(request: NextRequest) {
           throw new Error(`Failed to upsert into ${table}: ${error.message}`);
         }
 
-        inserted += batch.length;
+        processed += batch.length;
       }
 
-      results[table] = inserted;
+      results[table] = processed;
     }
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
