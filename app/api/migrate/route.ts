@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  if (!process.env.PRISMA_DATABASE_URL) {
+  if (!process.env.DATABASE_URL) {
     return NextResponse.json(
       { error: 'PRISMA_DATABASE_URL is not configured' },
       { status: 500 },
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
   const results: Record<string, number> = {};
 
   // Connect to source (Prisma Postgres) via TCP
-  const source = postgres(process.env.PRISMA_DATABASE_URL, {
+  const source = postgres(process.env.DATABASE_URL, {
     max: 1,
     idle_timeout: 20,
     connect_timeout: 30,
